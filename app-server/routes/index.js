@@ -9,4 +9,9 @@ router.get('/', function(req, res, next) {
     res.render('index', {info: req.flash('info'), success: req.flash('success')});
 });
 
+router.use((req,res,next) => {
+  if (req.user) next()
+  else res.redirect('/')
+})
+
 module.exports = router;

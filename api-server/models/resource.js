@@ -12,7 +12,12 @@ const ResourceSchema = new mongoose.Schema({
         path : String,
         size : Number,
         mimetype : String
-    }]
+    }],
+    comments : [{
+        author : String,
+        text : String
+    }],
+    views : Number
 })
 
 module.exports = mongoose.model('Resource', ResourceSchema)
