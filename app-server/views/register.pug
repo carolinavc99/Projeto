@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  h2 Register
+
+  form(action="/register",method="post")
+    div
+      label Nome de utilizador
+      input(type="text",name="username")
+
+    div
+      label Email
+      input(type="text",name="email")
+
+    div
+      label Password
+      input(type="password",name="password")
+
+    div
+      label Tipo de utilizador
+      input(type="radio", name="authLevel", value="0")
+      input(type="radio", name="authLevel", value="1")
+      input(type="radio", name="authLevel", value="2")
+
+    div
+      input(type="submit",value="Register")
