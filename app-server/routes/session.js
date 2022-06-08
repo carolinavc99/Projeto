@@ -28,11 +28,11 @@ router.post("/register", function(req, res){
 });
 
 router.get("/login", function(req, res){
-    res.render('login', {message: req.session.messages ? req.session.messages.at(-1) : ""});
+    res.render('login', {error : req.flash('error')});
 });
 
 router.post("/login", passport.authenticate("local",{
-    failureRedirect: "/login", failureMessage: true
+    failureRedirect: "/login", failureFlash: true
     }), function(req, res){
         res.redirect('/')
 });

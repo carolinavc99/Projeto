@@ -1,0 +1,31 @@
+extends sidebar
+
+block mainPage
+  h1.text-center.text-3xl.font-bold Novo Recurso
+
+  div.flex.flex-col.gap-16.pt-8
+    div
+      h2.font-bold.text-xl.pl-4.pb-6 Alterar dados pessoais 
+      form
+        div.grid.grid-cols-2.gap-x-8.gap-y-2
+          label(for="username") Nome de utilizador
+          input(type="text", name="username" class="border border-slate-600" value=user.username) 
+
+          label(for="email") Email
+          input(type="text", name="email" class="border border-slate-600" value=user.email)
+        button(type="submit") Submeter
+
+    div
+      h2.font-bold.text-xl.pl-4.pb-6 Alterar password
+      form
+        div.grid.grid-cols-2.gap-x-8.gap-y-2
+          label(for="password") Nova password
+          input(type="password", class="border border-slate-600" name="password")
+
+          label(for="password-confirm") Nova password (confirmar)
+          input(type="password", class="border border-slate-600" name="password-confirm")
+        button(type="submit") Submeter
+
+    div.w-96
+      h2.font-bold.text-xl.pl-4.pb-6 Token
+      p.overflow-x-scroll= user.token

@@ -6,7 +6,7 @@ router.get('/', function(req, res, next) {
   if (req.user)
     res.render('userIndex', {user: req.user})
   else
-    res.render('index');
+    res.render('index', {info: req.flash('info'), success: req.flash('success')});
 });
 
 module.exports = router;

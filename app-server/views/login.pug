@@ -3,8 +3,6 @@ extends layout
 block content
   h2 Log In
 
-  if message != ''
-    .alert.alert-error #{message}
   form(action="/login",method="post")
     div
       label Email 
@@ -15,3 +13,6 @@ block content
       input(type="password",name="password")
 
     button(type="submit") Log in
+
+  div(class="fixed bottom-4 left-1/2 right-1/2 flex flex-col items-center gap-4")
+    p.w-max.text-red-600= error

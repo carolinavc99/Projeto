@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var flash = require('express-flash')
 var jwt = require('jsonwebtoken')
 
 var sessionRouter = require('./routes/session');
@@ -36,6 +37,7 @@ app.use(require("express-session")({
     resave: false,
     saveUninitialized: false
 }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
