@@ -3,8 +3,10 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log(req.user)
-  res.render('index', { user: req.user });
+  if (req.user)
+    res.render('userIndex', {user: req.user})
+  else
+    res.render('index');
 });
 
 module.exports = router;
