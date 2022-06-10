@@ -16,7 +16,7 @@ block mainPage
       })
 
       $("#files_p_div").on('click', '#add_new_file_btn', e => {
-        $("#files_div").append(`<div class="flex items-center fileinput">
+        $("#files_div").append(`<div class="flex items-center fileinput justify-between">
           <input type="file" name="files">
           <div class="delete text-red-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -31,17 +31,17 @@ block mainPage
       })
     })
 
-  div.flex.flex-col.gap-16.mt-8(class="mx-[30%] bg-slate-500 rounded-xl py-6 px-10 text-white")
+  div.flex.flex-col.gap-16.mt-8(class="mx-[30%] bg-slate-700 shadow-lg rounded-xl py-6 px-10")
     form(action="/resources" method="post" enctype="multipart/form-data" class="flex flex-col gap-8")
       div.grid.gap-x-8.gap-y-2(class="grid-cols-[max-content,1fr]")
-        label(for="title") Título
-        input(type="text", name="title" class="text-black px-2") 
+        label(for="title" class="font-light") Título
+        input(type="text", name="title" class="text-black px-2 bg-slate-300") 
 
-        label(for="description") Descrição
-        textarea(name="description", cols="30", rows="5" class="text-black px-2 py-1") 
+        label(for="description" class="font-light") Descrição
+        textarea(name="description", cols="30", rows="5" class="text-black px-2 py-1 bg-slate-300") 
 
-        label(for="type") Tipo de Recurso
-        select(name="type" class="text-black px-1")
+        label(for="type" class="font-light") Tipo de Recurso
+        select(name="type" class="text-black px-1 bg-slate-300")
           option(value="teste-exame") Teste/Exame
           option(value="ficha") Ficha 
           option(value="slides") Slides
@@ -49,31 +49,37 @@ block mainPage
           option(value="relatorio") Relatório
           option(value="tese") Tese
           
-        label Relativo a
+        label(class="font-light") Relativo a
         div.flex.gap-3
-          select(name="semestre" class="text-black")
-            option(value="1") 1º Semestre
-            option(value="2") 2º Semestre
-            option(value="0") Anual
-          - var currentYear = new Date().getFullYear()
+          select(name="semester" class="text-black bg-slate-300")
+            option(value=1) 1º Semestre
+            option(value=2) 2º Semestre
+            option(value=0) Anual
           p de
           div.flex
-            input(id="yearInput" type="number" class="text-black w-min" name="year" min="1900" max=currentYear + 1)
+            input(id="yearInput" type="number" size="1" class="text-black w-14 bg-slate-300" name="year" min="1900" max=new Date().getFullYear())
             p
               | /
               span#year XX
 
-        label(for="author") Autor
-        input(type="text" name="author" class="text-black px-2")
+        label(for="author" class="font-light flex gap-2 items-center") 
+          p Autor(es)
 
-        label(for="files") Ficheiros
+          div.tooltip
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+              path(fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd")
+            p.tooltiptext.font-normal Autores separados por vírgulas.
+        input(type="text" name="authors" class="text-black px-2 bg-slate-300")
+
+        label(for="files" class="font-light") Ficheiros
         div#files_p_div.flex.flex-col.gap-2
           div#files_div.flex.flex-col.gap-2
-            div.flex.fileinput
+            div.fileinput
               input(type="file" name="files")
           div(id="add_new_file_btn" class="cursor-pointer select-none self-center text-violet-400")
             svg(xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor")
               path(fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd")
           
-
+      input(type="hidden", name="username" value=user.username)
+      input(type="hidden", name="email" value=user.email)
       button(type="submit" class="self-center btn") Adicionar

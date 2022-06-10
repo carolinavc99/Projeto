@@ -3,16 +3,16 @@ extends sidebar
 block mainPage
   h1.text-center.text-3xl.font-bold Gestão da conta
 
-  div.flex.flex-col.gap-16.mt-8(class="mx-[30%] bg-slate-500 rounded-xl py-6 px-10 text-white")
+  div.flex.flex-col.gap-16.mt-8(class="mx-[30%] bg-slate-700 rounded-xl py-6 px-10")
     div
       h2.font-bold.text-xl.pl-4.pb-6 Alterar dados pessoais 
       form(action="/account" method="post").flex.flex-col.items-stretch.gap-6
         input(type="hidden", name="id" value=user['_id'])
         div.grid.grid-cols-2.gap-x-8.gap-y-2.items-center
-          label(for="username") Nome de utilizador
+          label(for="username" class="font-light") Nome de utilizador
           input(type="text", name="username" class="border border-slate-600 text-black px-1" value=user.username) 
 
-          label(for="email") Email
+          label(for="email" class="font-light") Email
           input(type="text", name="email" class="border border-slate-600 text-black px-1" value=user.email)
         button(type="submit" class="self-center btn") Submeter
 
@@ -20,10 +20,10 @@ block mainPage
       h2.font-bold.text-xl.pl-4.pb-6 Alterar password
       form(action="/account/password" method="post").flex.flex-col.items-stretch.gap-6
         div.grid.grid-cols-2.gap-x-8.gap-y-2.items-center
-          label(for="password") Nova password
+          label(for="password" class="font-light") Nova password
           input(type="password", class="border border-slate-600 text-black px-1" name="password")
 
-          label(for="password_confirm") Nova password (confirmar)
+          label(for="password_confirm" class="font-light") Nova password (confirmar)
           input(type="password", class="border border-slate-600 text-black px-1" name="password_confirm")
         button(type="submit" class="self-center btn") Submeter
 
