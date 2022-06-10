@@ -16,7 +16,7 @@ block content
               path(d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z")
             p Os meus recursos
         if user.authLevel > 0
-          a(class="bg-slate-500 hover:bg-slate-400 transition-colors ease-in-out px-2 py-1 text-lg rounded-3xl flex items-center gap-2")
+          a(class="bg-slate-500 hover:bg-slate-400 transition-colors ease-in-out px-2 py-1 text-lg rounded-3xl flex items-center gap-2" href="/resources/new")
             svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
               path(fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" )
             p Adicionar recurso
@@ -34,7 +34,7 @@ block content
           svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 my-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2")
             path(stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1")
           p Terminar sessão
-    div.px-8.py-6.w-full
+    div.px-8.py-6.w-full.bg-slate-300
       block mainPage
       div(class="fixed bottom-4 left-1/2 right-1/2 flex flex-col items-center gap-4")
         p.w-max.text-green-600= success

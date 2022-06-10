@@ -3,29 +3,29 @@ extends sidebar
 block mainPage
   h1.text-center.text-3xl.font-bold Gestão da conta
 
-  div.flex.flex-col.gap-16.pt-8(class="px-[30%]")
+  div.flex.flex-col.gap-16.mt-8(class="mx-[30%] bg-slate-500 rounded-xl py-6 px-10 text-white")
     div
       h2.font-bold.text-xl.pl-4.pb-6 Alterar dados pessoais 
-      form(action="/account" method="post").flex.flex-col.items-stretch.gap-4
+      form(action="/account" method="post").flex.flex-col.items-stretch.gap-6
         input(type="hidden", name="id" value=user['_id'])
         div.grid.grid-cols-2.gap-x-8.gap-y-2.items-center
           label(for="username") Nome de utilizador
-          input(type="text", name="username" class="border border-slate-600" value=user.username) 
+          input(type="text", name="username" class="border border-slate-600 text-black px-1" value=user.username) 
 
           label(for="email") Email
-          input(type="text", name="email" class="border border-slate-600" value=user.email)
-        button(type="submit" class="self-center bg-slate-600 text-white px-2 py-1 rounded-xl") Submeter
+          input(type="text", name="email" class="border border-slate-600 text-black px-1" value=user.email)
+        button(type="submit" class="self-center btn") Submeter
 
     div
       h2.font-bold.text-xl.pl-4.pb-6 Alterar password
-      form(action="/account/password" method="post").flex.flex-col.items-stretch.gap-4
+      form(action="/account/password" method="post").flex.flex-col.items-stretch.gap-6
         div.grid.grid-cols-2.gap-x-8.gap-y-2.items-center
           label(for="password") Nova password
-          input(type="password", class="border border-slate-600" name="password")
+          input(type="password", class="border border-slate-600 text-black px-1" name="password")
 
           label(for="password_confirm") Nova password (confirmar)
-          input(type="password", class="border border-slate-600" name="password_confirm")
-        button(type="submit" class="self-center bg-slate-600 text-white px-2 py-1 rounded-xl") Submeter
+          input(type="password", class="border border-slate-600 text-black px-1" name="password_confirm")
+        button(type="submit" class="self-center btn") Submeter
 
     div
       h2.font-bold.text-xl.pl-4.pb-6 Token

@@ -6,3 +6,7 @@ input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px theme('colors.slate.500') inset;
     -webkit-text-fill-color: white !important;
 }
+
+.btn {
+    @apply bg-violet-600 px-4 py-2 rounded-xl shadow-md text-xl;
+}

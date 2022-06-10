@@ -3,29 +3,77 @@ extends sidebar
 block mainPage
   h1.text-center.text-3xl.font-bold Novo Recurso
 
-  div.flex.flex-col.gap-16.pt-8
-    div
-      h2.font-bold.text-xl.pl-4.pb-6 Alterar dados pessoais 
-      form
-        div.grid.grid-cols-2.gap-x-8.gap-y-2
-          label(for="username") Nome de utilizador
-          input(type="text", name="username" class="border border-slate-600" value=user.username) 
+  script.
+    $(function(){
+      var currentYear = new Date().getFullYear()
 
-          label(for="email") Email
-          input(type="text", name="email" class="border border-slate-600" value=user.email)
-        button(type="submit") Submeter
+      $("#yearInput").val(currentYear)
+      $('#year').text((currentYear + 1).toString().slice(-2))
 
-    div
-      h2.font-bold.text-xl.pl-4.pb-6 Alterar password
-      form
-        div.grid.grid-cols-2.gap-x-8.gap-y-2
-          label(for="password") Nova password
-          input(type="password", class="border border-slate-600" name="password")
+      $("#yearInput").on('input', e => {
+        let year = parseInt($(e.target).val()) + 1
+        $('#year').text(year.toString().slice(-2))
+      })
 
-          label(for="password-confirm") Nova password (confirmar)
-          input(type="password", class="border border-slate-600" name="password-confirm")
-        button(type="submit") Submeter
+      $("#files_p_div").on('click', '#add_new_file_btn', e => {
+        $("#files_div").append(`<div class="flex items-center fileinput">
+          <input type="file" name="files">
+          <div class="delete text-red-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>`)
+      })
 
-    div.w-96
-      h2.font-bold.text-xl.pl-4.pb-6 Token
-      p.overflow-x-scroll= user.token
+      $("#files_div").on('click', '.delete', e => {
+        $(e.target).parents('.fileinput').remove()
+      })
+    })
+
+  div.flex.flex-col.gap-16.mt-8(class="mx-[30%] bg-slate-500 rounded-xl py-6 px-10 text-white")
+    form(action="/resources" method="post" enctype="multipart/form-data" class="flex flex-col gap-8")
+      div.grid.gap-x-8.gap-y-2(class="grid-cols-[max-content,1fr]")
+        label(for="title") Título
+        input(type="text", name="title" class="text-black px-2") 
+
+        label(for="description") Descrição
+        textarea(name="description", cols="30", rows="5" class="text-black px-2 py-1") 
+
+        label(for="type") Tipo de Recurso
+        select(name="type" class="text-black px-1")
+          option(value="teste-exame") Teste/Exame
+          option(value="ficha") Ficha 
+          option(value="slides") Slides
+          option(value="manual") Manual
+          option(value="relatorio") Relatório
+          option(value="tese") Tese
+          
+        label Relativo a
+        div.flex.gap-3
+          select(name="semestre" class="text-black")
+            option(value="1") 1º Semestre
+            option(value="2") 2º Semestre
+            option(value="0") Anual
+          - var currentYear = new Date().getFullYear()
+          p de
+          div.flex
+            input(id="yearInput" type="number" class="text-black w-min" name="year" min="1900" max=currentYear + 1)
+            p
+              | /
+              span#year XX
+
+        label(for="author") Autor
+        input(type="text" name="author" class="text-black px-2")
+
+        label(for="files") Ficheiros
+        div#files_p_div.flex.flex-col.gap-2
+          div#files_div.flex.flex-col.gap-2
+            div.flex.fileinput
+              input(type="file" name="files")
+          div(id="add_new_file_btn" class="cursor-pointer select-none self-center text-violet-400")
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor")
+              path(fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd")
+          
+
+      button(type="submit" class="self-center btn") Adicionar
