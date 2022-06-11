@@ -12,11 +12,11 @@ input:-webkit-autofill {
 }
 
 .tooltip {
-    @apply relative inline-block cursor-pointer;
+    @apply relative inline-block cursor-pointer select-none ;
 }
 
 .tooltip .tooltiptext {
-    @apply invisible bg-slate-500 text-center rounded-md px-5 py-1 w-max absolute z-10;
+    @apply invisible bg-white text-black text-center rounded-md px-3 py-1 w-max text-sm absolute z-10 top-0 -translate-y-full;
 }
 
 .tooltip:hover .tooltiptext {

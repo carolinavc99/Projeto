@@ -1,0 +1,20 @@
+extends sidebar
+
+block mainPage
+  h1.text-center.text-3xl.font-bold= "Recursos" + (global ? "" : " de " + user.username) 
+
+  ul.flex.flex-col.items-stretch(class="mt-8")
+    each resource in resources
+      li.bg-slate-800(class="border-y border-slate-500 first:rounded-t-md first:border-t-0 last:rounded-b-md last:border-b-0")
+        a.block.px-4.py-2.flex.justify-between(href="/resources/" + resource._id)
+          div
+            p.font-bold.text-xl= resource.title
+            p.font-light.text-sm= resource.authors.join(', ')
+          div.flex.flex-col.items-end
+            p= typePrettier(resource.resourceType)
+            p= (resource.semester == 0 ? "" : resource.semester + "º semestre") + ` ${resource.academicYearStart}/${(resource.academicYearStart + 1).toString().slice(-2)}`
+            p.font-light.text-sm 
+              | Adicionado
+              if global
+                = " por " + resource.submitter
+              = " em " + resource.dateUploaded.split('T')[0]

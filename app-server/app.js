@@ -48,6 +48,24 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use((req, res, next) => {
+  res.locals.error = req.flash('error')
+  res.locals.warning = req.flash('warning')
+  res.locals.info = req.flash('info')
+  res.locals.success = req.flash('success')
+  res.locals.typePrettier = (type) => {
+    return {
+      'slides': "Slides",
+      'ficha': "Ficha",
+      'teste-exame': "Teste/Exame",
+      'tese': "Tese",
+      'manual': "Manual",
+      'relatorio': "Relatório"
+    }[type]
+  }
+  next()
+})
+
 app.use('/', sessionRouter);
 app.use('/', indexRouter);
 app.use('/account', accountRouter);

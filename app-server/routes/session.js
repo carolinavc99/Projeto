@@ -12,8 +12,10 @@ router.get('/register', function(req, res) {
 // handling user sign up
 router.post("/register", function(req, res){
     let authLevel = parseInt(req.body.authLevel)
-    let token = jwt.sign({"auth": authLevel}, 'RPCW2022-Projeto')
+    let id = new mongoose.Types.ObjectId();
+    let token = jwt.sign({"id": id.toString(),"auth": authLevel}, 'RPCW2022-Projeto')
     User.register(new User({
+        _id: id,
         username: req.body.username,
         email: req.body.email,
         authLevel: authLevel,
@@ -30,7 +32,7 @@ router.post("/register", function(req, res){
 });
 
 router.get("/login", function(req, res){
-    res.render('login', {error : req.flash('error')});
+    res.render('login');
 });
 
 router.post("/login", passport.authenticate("local",{

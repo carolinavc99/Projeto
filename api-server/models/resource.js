@@ -2,19 +2,22 @@ const mongoose = require('mongoose')
 
 const ResourceSchema = new mongoose.Schema({
     title : String,
-    dateCreated : Date,
+    description : String,
+    semester : Number, // 1, 2 ou 0 se for anual
+    academicYearStart : Number, // 2021 no caso do ano letivo 2021/22
     dateUploaded : Date,
-    author : String, // nome do autor
-    submittedBy : String, // email da conta que fez a submissão
+    authors : [String], 
+    submittedBy : String, // id da pessoa que fez a submissão
     resourceType : String, // e.g.: teste/exame, slides, manual, relatório, tese, etc.
     files : [{
         name : String,
         path : String,
         size : Number,
-        mimetype : String
+        mimetype : String,
+        hash : String
     }],
     comments : [{
-        author : String,
+        author : String, // id da pessoa que comentou
         text : String
     }],
     views : Number

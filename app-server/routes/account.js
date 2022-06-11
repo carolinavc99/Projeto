@@ -1,17 +1,11 @@
 var express = require('express');
 var router = express.Router();
+const jwt = require('jsonwebtoken')
 
 const UserController = require('../controllers/userController')
 
-router.use(function(req, res, next) {
-  if(req.user) next()
-  else return res.redirect('/')
-})
-
 router.get('/', function(req, res, next) {
-  let success = req.flash('success')
-  let error = req.flash('error')
-  res.render('account', { user : req.user, success: success, error: error })
+  res.render('account')
 });
 
 router.post('/', function(req, res, next) {
@@ -24,6 +18,17 @@ router.post('/', function(req, res, next) {
     res.redirect('back')
   }).catch( error => {
     next(error)
+  })
+})
+
+router.get('/token', function(req, res, next) {
+  let newToken = jwt.sign({"id": req.user._id.toString(), "auth": req.user.authLevel}, 'RPCW2022-Projeto')
+  UserController.update_token(req.user._id, newToken).then(value => {
+    req.flash('success', "Novo token gerado com sucesso!")
+    res.redirect('back')
+  }).catch(error => {
+    req.flash('error', "Erro na geração de um novo token.")
+    res.redirect('back')
   })
 })
 

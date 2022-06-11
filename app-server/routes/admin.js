@@ -8,7 +8,7 @@ router.use((req, res, next) => {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('adminPanel', {user: req.user})
+    res.render('adminPanel')
 });
 
 module.exports = router;

@@ -10,7 +10,10 @@ router.get('/', function(req, res, next) {
 });
 
 router.use((req,res,next) => {
-  if (req.user) next()
+  if (req.user) {
+    res.locals.user = req.user
+    next()
+  } 
   else res.redirect('/')
 })
 
