@@ -20,12 +20,27 @@ router.use((req, res, next) => {
     jwt.verify(token, 'RPCW2022-Projeto', (err, payload) => {
       if (err || !payload.auth) return res.status(400).jsonp({error: "Token inválido"})
       res.locals.auth = payload.auth
+      res.locals.id = payload.id
       next()
     })
   } else {
     res.status(401).jsonp({error: "Token não encontrado."})
   }
 })
+
+function adminOrOwner(req, res, next) {
+  if(res.locals.auth > 1) next()
+  if(req.params.rid) {
+    ResourceController.lookup(req.params.rid).then(v => {
+      if (v.submittedBy == res.locals.id)
+        next()
+      else 
+        res.status(403).jsonp({error: "Sem permissão."})
+    })
+  } else {
+    next()
+  }
+}
 
 router.get('/recursos', function(req, res, next) {
   filters = {}
@@ -53,7 +68,7 @@ router.get('/recursos/:rid', function(req, res, next) {
   })
 });
 
-router.delete('/recursos/:rid', function(req, res, next) {
+router.delete('/recursos/:rid', adminOrOwner, function(req, res, next) {
   ResourceController.delete(req.params.rid).then(value => {
     value.files.forEach(v => {
       fs.unlink(v.path, (err) => {
@@ -151,7 +166,7 @@ router.post('/recursos', upload.single('file'), function(req, res, next) {
 });
 
 
-router.put('/recursos/:rid', upload.single('file'), function(req, res, next) {
+router.put('/recursos/:rid', adminOrOwner, upload.single('file'), function(req, res, next) {
   fs.readFile(req.file.path, function(err, data) {
     if (err) throw err
     JSZip.loadAsync(data).then(zip => {
