@@ -3,6 +3,7 @@ extends layout
 block content
   block vars
     - var page = -1
+    - var large = false
   div.flex
     div(class="sticky h-screen top-0 bottom-0 w-64 bg-slate-800 text-white flex-shrink-0")
       a(href="/").block.font-bold.p-4.text-2xl.break-words Repositório de Recursos Didáticos
@@ -40,7 +41,7 @@ block content
             path(stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1")
           p Terminar sessão
     div.px-8.py-6.bg-slate-500.text-white.w-full
-      div(class="lg:px-[10%] xl:px-[15%] 2xl:px-[30%] space-y-8")
+      div(class="space-y-8 " + (large ? "lg:px-[5%] xl:px-[10%] 2xl:px-[15%]" : "lg:px-[10%] xl:px-[15%] 2xl:px-[30%]"))
         block mainPage
       script.
         $(function() {
@@ -48,12 +49,14 @@ block content
             $(e.target).remove()
           })
         })
-      div(class="fixed bottom-4 left-1/2 right-1/2 flex flex-col items-center gap-4 select-none pop-ups")
-        if success.length > 0
-          p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-green-500= success
-        if info.length > 0
-          p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-white= info
-        if warning.length > 0
-          p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-yellow-500= warning
-        if error.length > 0
-          p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-red-500= error
+      div(class="fixed bottom-4 left-1/2 right-1/2 flex flex-col items-center gap-4")
+        block buttons
+        div(class="flex flex-col items-center gap-4 select-none pop-ups")
+          if success.length > 0
+            p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-green-500= success
+          if info.length > 0
+            p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-white= info
+          if warning.length > 0
+            p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-yellow-500= warning
+          if error.length > 0
+            p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-red-500= error

@@ -9,6 +9,16 @@ block mainPage
   if global
     div.bg-slate-700.px-4.py-2.rounded-xl.flex.justify-center
       form.flex.items-center.gap-2(action="/resources")
+        label(for="tipo" class="font-light") Tipo:
+        select(name="tipo" class="px-1 bg-slate-500")
+          option(value="") ---
+          option(value="teste-exame") Teste/Exame
+          option(value="ficha") Ficha 
+          option(value="slides") Slides
+          option(value="manual") Manual
+          option(value="relatorio") Relatório
+          option(value="tese") Tese
+        div.self-stretch.w-1.bg-slate-500(class="w-[1px]")
         input(type="text", name="q" class="bg-slate-500 rounded-md px-1" value=q)
         button(type="submit") 
           svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")

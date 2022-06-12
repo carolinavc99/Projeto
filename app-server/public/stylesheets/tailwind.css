@@ -7,8 +7,16 @@ input:-webkit-autofill {
     -webkit-text-fill-color: white !important;
 }
 
+.btn-template {
+    @apply px-4 py-2 rounded-xl shadow-md text-xl transition-colors duration-200;
+}
+
 .btn {
-    @apply bg-violet-600 px-4 py-2 rounded-xl shadow-md text-xl;
+    @apply btn-template bg-violet-600 hover:bg-violet-700;
+}
+
+.btn-red {
+    @apply btn-template bg-red-600 hover:bg-red-700;
 }
 
 .tooltip {
