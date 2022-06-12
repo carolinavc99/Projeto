@@ -26,7 +26,14 @@ router.use((req, res, next) => {
 })
 
 router.get('/recursos', function(req, res, next) {
-  ResourceController.list().then(value => {
+  filters = {}
+  if(req.query.account) {
+    filters['submittedBy'] = req.query.account
+  }
+  if(req.query.q) {
+    filters['title'] = {"$regex": req.query.q, "$options": "i"}
+  }
+  ResourceController.list(filters).then(value => {
     res.jsonp(value)
   }).catch(error => {
     res.status(500).jsonp({error: error})

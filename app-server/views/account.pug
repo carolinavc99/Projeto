@@ -1,9 +1,12 @@
 extends sidebar
 
+block vars
+  - var page = 4
+
 block mainPage
   h1.text-center.text-3xl.font-bold Gestão da conta
 
-  div.flex.flex-col.gap-16.mt-8(class="bg-slate-700 rounded-xl py-6 px-10")
+  div.flex.flex-col.gap-16(class="bg-slate-700 rounded-xl py-6 px-10")
     div
       h2.font-bold.text-xl.pl-4.pb-6 Alterar dados pessoais 
       form(action="/account" method="post").flex.flex-col.items-stretch.gap-6
@@ -28,7 +31,30 @@ block mainPage
         button(type="submit" class="self-center btn") Submeter
 
     div
-      h2.font-bold.text-xl.pl-4.pb-6 Token
-      p.overflow-x-scroll= user.token
+      div.flex.justify-between.items-end.pb-6.gap-3
+        h2.font-bold.text-xl.pl-4 Token
+        button(onclick="copyToClipboard()" id="token-btn" class="font-light")
+          #token-icon-b.flex.items-stretch(class="border-b border-dotted border-slate-500")
+            p Copiar para a área de transferência
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+              path(d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z")
+              path(d="M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z")
+          #token-icon-a.flex.items-stretch.hidden.text-green-300.border-b.border-slate-700
+            p Copiado com sucesso!
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+              path(d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z")
+              path(fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9.707 5.707a1 1 0 00-1.414-1.414L9 12.586l-1.293-1.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd")
+      p#token.break-all= user.token
       div.flex.flex-col.mt-6
         a(href="/account/token" class="self-center btn") Gerar novo token
+      script.
+        function copyToClipboard() {
+          /* Get the text field */
+          var copyText = document.getElementById("token");
+
+          /* Copy the text inside the text field */
+          navigator.clipboard.writeText(copyText.textContent).then(() => {
+            document.getElementById("token-icon-b").style.display = "none"
+            document.getElementById("token-icon-a").style.display = "flex"
+          });
+        }

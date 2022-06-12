@@ -19,7 +19,11 @@ router.use((req, res, next) => {
 })
 
 router.get('/', function(req, res, next) {
-    axios.get('http://localhost:8000/api/recursos?token=' + req.user.token).then( value => {
+    let url = 'http://localhost:8000/api/recursos?token=' + req.user.token
+    if(req.query.q) {
+        url ='http://localhost:8000/api/recursos?q=' + req.query.q + '&token=' + req.user.token
+    }
+    axios.get(url).then( value => {
         UserController.get_info(value.data.map(r => r.submittedBy)).then( userdata => {
             value.data.forEach((r, i) => {
                 let user = userdata.find(x => x['_id'] == r.submittedBy)
@@ -29,7 +33,7 @@ router.get('/', function(req, res, next) {
                     value.data[i]['submitter'] = "[DELETED]"
                 }
             })
-            res.render('resources', {resources: value.data, global: true})
+            res.render('resources', {resources: value.data, global: true, q: req.query.q})
         }).catch( error => { res.render('error', {message: error}) })
     }).catch(error => {
         res.render('error', {message: error})
@@ -37,7 +41,7 @@ router.get('/', function(req, res, next) {
 })
 
 router.get('/user', function(req, res, next) {
-    axios.get('http://localhost:8000/api/recursos?token=' + req.user.token).then( value => {
+    axios.get('http://localhost:8000/api/recursos?account=' + req.user._id + '&token=' + req.user.token).then( value => {
         res.render('resources', {resources: value.data, global: false})
     }).catch(error => {
         res.render('error', {message: error})

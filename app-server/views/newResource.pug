@@ -1,5 +1,8 @@
 extends sidebar
 
+block vars
+  - var page = 3
+
 block mainPage
   h1.text-center.text-3xl.font-bold Novo Recurso
 
@@ -31,7 +34,7 @@ block mainPage
       })
     })
 
-  div.flex.flex-col.gap-16.mt-8(class="bg-slate-700 shadow-lg rounded-xl py-6 px-10")
+  div.flex.flex-col.gap-16(class="bg-slate-700 shadow-lg rounded-xl py-6 px-10")
     form(action="/resources" method="post" enctype="multipart/form-data" class="flex flex-col gap-8")
       div.grid.gap-x-8.gap-y-2(class="grid-cols-[max-content,1fr]")
         label(for="title" class="font-light") Título

@@ -5,8 +5,8 @@ module.exports.insert = (r) => {
     return newResource.save()
 }
 
-module.exports.list = () => {
-    return Resource.find().exec()
+module.exports.list = (filters) => {
+    return Resource.find(filters).exec()
 }
 
 module.exports.lookup = (rid) => {
