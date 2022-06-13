@@ -13,6 +13,20 @@ module.exports.lookup = (rid) => {
     return Resource.findById(rid).exec()
 }
 
+module.exports.add_view = (rid) => {
+    return Resource.findByIdAndUpdate(rid, {$inc: {views: 1}}).exec()
+}
+
+module.exports.add_score = (rid, account, score) => {
+    return Resource.findOne({_id: rid, 'reviews.author': account}).exec().then(value => {
+        if(value) {
+            return Resource.findOneAndUpdate({_id: rid, 'reviews.author': account}, {'reviews.$.value': score}).exec()
+        } else {
+            return Resource.findByIdAndUpdate(rid, {$push: {reviews: {'author': account, 'value': score}}}).exec()
+        }
+    })
+}
+
 module.exports.delete = (rid) => {
     return Resource.findByIdAndDelete(rid).exec()
 }

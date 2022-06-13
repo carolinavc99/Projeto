@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- edited with XMLSpy v2005 sp1 U (http://www.xmlspy.com) by José Carlos Ramalho (University of Minho) -->
+<!-- edited with XMLSPY v2004 rel. 4 U (http://www.xmlspy.com) by José Carlos Ramalho (University of Minho) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="AulaPrática">
+		<xs:annotation>
+			<xs:documentation>Comment describing your root element</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="meta">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="disciplina" type="xs:string"/>
+							<xs:element name="datas">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="data" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="tipo" type="Tdata"/>
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="objectivos" type="TParaSeq"/>
+							<xs:element name="recursos" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="documento" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:simpleContent>
+													<xs:extension base="xs:string">
+														<xs:attribute name="url" type="xs:string" use="required"/>
+														<xs:attribute name="id" type="xs:ID" use="optional"/>
+													</xs:extension>
+												</xs:simpleContent>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="changelog" minOccurs="0">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="update" maxOccurs="unbounded" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="date" type="xs:date"/>
+													<xs:element name="description" type="xs:string"/>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="corpo">
+					<xs:complexType>
+						<xs:choice maxOccurs="unbounded">
+							<xs:element name="exercício">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="título" type="xs:string"/>
+										<xs:element name="enunciado" type="Tconteudo"/>
+										<xs:element name="solucao" type="Tconteudo" minOccurs="0"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:group ref="Gflutuantes"/>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:ID"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="TParaSeq">
+		<xs:sequence>
+			<xs:element name="para" type="Tpara" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Tpara" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="lista">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="item" type="Tpara" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="listan">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="item" type="Tpara" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="listad">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="item" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="termo" type="xs:string"/>
+									<xs:element name="descricao" type="Tpara"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="acronimo" type="xs:string"/>
+			<xs:element name="xref">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="url" type="xs:string"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="iref">
+				<xs:complexType>
+					<xs:attribute name="ref" type="xs:string" use="required"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="realce">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="tipo" type="xs:string" default="emph"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="kw" type="xs:string"/>
+			<xs:element name="tabela">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="linha" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="celula" type="Tpara" maxOccurs="unbounded"/>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="kbd" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Para anotar comandos a serem introduzidos pelo teclado</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:group ref="Gflutuantes"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="Timagem">
+		<xs:sequence>
+			<xs:element name="legenda" type="xs:string"/>
+			<xs:element name="grafico">
+				<xs:complexType>
+					<xs:attribute name="path" type="xs:string" use="required"/>
+					<xs:attribute name="formato" type="xs:string" use="optional"/>
+					<xs:attribute name="width" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Tconteudo">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="para" type="Tpara"/>
+			<xs:element name="codigo" type="xs:string"/>
+			<xs:element name="imagem" type="Timagem"/>
+			<xs:element name="alíneas">
+				<xs:complexType>
+					<xs:choice maxOccurs="unbounded">
+						<xs:element name="alínea" type="Tpara"/>
+						<xs:group ref="Gflutuantes"/>
+					</xs:choice>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:group name="Gflutuantes">
+		<xs:choice>
+			<xs:element name="para" type="Tpara"/>
+			<xs:element name="codigo" type="xs:string"/>
+			<xs:element name="imagem" type="Timagem"/>
+		</xs:choice>
+	</xs:group>
+	<xs:simpleType name="Tdata">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="criac."/>
+			<xs:enumeration value="rev."/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -60,10 +60,17 @@ router.get('/new', function(req, res, next) {
 
 router.get('/:id', (req, res, next) => {
     axios.get('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
+        let reviews = value.data.reviews
+        let score = 0
+        let userScore = 0
+        if (reviews.length > 0)
+            score = (reviews.reduce((acc, x) => acc + x.value, 0) / reviews.length).toFixed(2)
+        let userS = reviews.find(x => x.author == req.user._id)
+        if(userS) userScore = userS.value
         UserController.get_info([value.data.submittedBy]).then( userdata => {
             value.data.submitter = userdata[0].username
             value.data.submitterEmail = userdata[0].email
-            res.render('resource', {resource: value.data})
+            res.render('resource', {resource: value.data, score: score, userScore: userScore})
         })
     }).catch(error => {
         res.render('error', {message: error})
@@ -93,6 +100,15 @@ router.get('/:id/delete', (req, res, next) => {
         res.render('error', {message: "Unauthorized"})
 })
 
+router.post('/:id/score', (req, res, next) => {
+    let userScore = req.body.value
+    axios.post('http://localhost:8000/api/recursos/' + req.params.id + '/score?token=' + req.user.token, {account: req.user._id, score: userScore}).then(value => {
+        res.send("Score set successfully.")
+    }).catch(error => {
+        res.status(500).send(error.response.data.error)
+    })
+})
+
 router.get('/:id/download', (req, res, next) => {
     axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/zip?token=' + req.user.token, {responseType: 'arraybuffer'}).then(value => {
         res.set(value.headers)
@@ -111,12 +127,16 @@ router.get('/:id/:fid', (req, res, next) => {
                     let a = "</" + ({
                         'lista': 'ul',
                         'listan': 'ol',
+                        'alíneas': 'ol',
+                        'alínea': 'li',
                         'item': 'li',
                         'para': 'p',
                         'documento': 'a',
                         'realce': 'b',
                         'título': 'h3',
-                        'codigo': 'pre'
+                        'codigo': 'pre',
+                        'disciplina': 'h2',
+                        'data': 'p'
                     }[p1] || "div") + ">"
                     return a
                 })
@@ -135,8 +155,13 @@ router.get('/:id/:fid', (req, res, next) => {
                         'recursos': 'h3 class="text-xl font-bold mt-4">Recursos</h3><div class="flex flex-col pl-4"',
                         'corpo': 'h2 class="text-2xl font-bold mt-6">Exercícios</h2><div class="pl-4"',
                         'enunciado': 'div class="pl-4 space-y-4"',
-                        'título': 'h3 class="text-xl font-bold"',
-                        'codigo': 'pre'
+                        'título': 'h3 class="text-xl font-bold mt-3"',
+                        'codigo': 'pre',
+                        'disciplina': 'h2 class="text-2xl font-bold"',
+                        'data': 'p class="font-light text-sm"',
+                        'objectivos': 'div class="mt-6"',
+                        'alíneas': 'ol class="list-[lower-alpha] pl-4"',
+                        'alínea': 'li'
                     }[p1] || "div") + p2 + ">"
                     return a
                 })
@@ -205,19 +230,13 @@ router.post('/', upload.array('files'), function(req, res, next) {
     zip.file('manifest-sha512.txt', manifest)
     zip.file('RRD-SIP.json', JSON.stringify(sip, null, 4))
 
-    // zip.generateNodeStream({type:'nodebuffer',streamFiles:true})
-    //     .pipe(fs.createWriteStream('temp/data.zip'))
-    //     .on('finish', function() {
-    //         console.log("Ficheiro ZIP gerado com sucesso!")
-    //     })
-
     zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
         var formData = new FormData()
         formData.append('file', file, "data.zip")
         axios.post('http://localhost:8000/api/recursos?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}}).then( value => {
             req.flash('success', 'Recurso adicionado com sucesso!')
         }).catch(error => { 
-            req.flash('error', 'Erro no envio do pedido à API.')
+            req.flash('error', 'Erro no envio do pedido à API: ' + error.response.data.error)
         }).finally(() => {
             res.redirect('/resources/new')
         })
@@ -284,7 +303,7 @@ router.post('/:id', upload.array('files'), function(req, res, next) {
             axios.put('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}}).then( value => {
                 req.flash('success', 'Recurso editado com sucesso!')
             }).catch(error => { 
-                req.flash('error', 'Erro no envio do pedido à API.')
+                req.flash('error', 'Erro no envio do pedido à API: ' + error.response.data.error)
             }).finally(() => {
                 res.redirect('/resources/' + req.params.id)
             })

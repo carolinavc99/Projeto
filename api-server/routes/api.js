@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var path = require('path')
+const libxmljs = require('libxmljs2')
 
 const jwt = require('jsonwebtoken')
 const JSZip = require('jszip')
@@ -13,6 +14,16 @@ const upload = multer({ dest: 'uploads/' })
 
 const ResourceController = require('../controllers/resourceController');
 const { default: mongoose } = require('mongoose');
+
+function validXML(xml) {
+  var data = fs.readFileSync( path.resolve(__dirname + '/../data/aulaP.xsd'), "utf8")
+  var xsdDoc = libxmljs.parseXml(data)
+  var xmlDoc = libxmljs.parseXml(xml)
+  var valid = xmlDoc.validate(xsdDoc)
+  if (!valid)
+    console.log(xmlDoc.validationErrors)
+  return valid
+}
 
 router.use((req, res, next) => {
   let token = req.query.token || req.header('token')
@@ -64,6 +75,7 @@ router.get('/recursos', function(req, res, next) {
 
 router.get('/recursos/:rid', function(req, res, next) {
   ResourceController.lookup(req.params.rid).then(value => {
+    ResourceController.add_view(req.params.rid)
     res.jsonp(value)
   }).catch(error => {
     res.status(500).jsonp({error: error})
@@ -99,6 +111,14 @@ router.get('/recursos/:rid/zip', function(req, res, next) {
       res.status(501).jsonp({error: error})
     })
 
+  }).catch(error => {
+    res.status(500).jsonp({error: error})
+  })
+});
+
+router.post('/recursos/:rid/score', function(req, res, next) {
+  ResourceController.add_score(req.params.rid, req.body.account, req.body.score).then(value => {
+    res.jsonp(value)
   }).catch(error => {
     res.status(500).jsonp({error: error})
   })
@@ -155,9 +175,13 @@ router.post('/recursos', upload.single('file'), function(req, res, next) {
           values.forEach((fileData, i) => {
             let hash = crypto.createHash('sha512').update(fileData, 'utf8').digest('hex')
             if (hash === sip.files[i].hash) {
-              fs.writeFile(path + '/' + sip.files[i].name, fileData, err => { if (err) throw err })
+              if(!sip.files[i].mimetype == "text/xml" || validXML(fileData.toString())) {
+                fs.writeFile(path + '/' + sip.files[i].name, fileData, err => { if (err) throw err })
+              } else {
+                throw new Error("Invalid XML file!")
+              }
             } else {
-              return res.status(500).jsonp({error: "File hashes do not match!"})
+              throw new Error("File hashes do not match!")
             }
           })
 
@@ -183,9 +207,24 @@ router.post('/recursos', upload.single('file'), function(req, res, next) {
           }).catch(error => {
             res.status(502).jsonp({error: error})
           })
-        }).catch(error => res.status(504).jsonp({error: error}))
-      }).catch(error => res.status(503).jsonp({error: error}))
-    }).catch(error => res.status(501).jsonp({error : error}))
+        }).catch(error => {
+          fs.unlink(req.file.path, (err) => {
+            if (err) throw err
+          })
+          res.status(504).jsonp({error: error.message})
+        })
+      }).catch(error => {
+        fs.unlink(req.file.path, (err) => {
+          if (err) throw err
+        })
+        res.status(503).jsonp({error: error.message})
+      })
+    }).catch(error => {
+      fs.unlink(req.file.path, (err) => {
+        if (err) throw err
+      })
+      res.status(501).jsonp({error : error.message})
+    })
   })
 });
 
@@ -216,9 +255,13 @@ router.put('/recursos/:rid', adminOrOwner, upload.single('file'), function(req, 
           values.forEach((fileData, i) => {
             let hash = crypto.createHash('sha512').update(fileData, 'utf8').digest('hex')
             if (hash === sip.files[i].hash) {
-              fs.writeFile(path + '/' + sip.files[i].name, fileData, err => { if (err) throw err })
+              if(!sip.files[i].mimetype == "text/xml" || validXML(fileData.toString())) {
+                fs.writeFile(path + '/' + sip.files[i].name, fileData, err => { if (err) throw err })
+              } else {
+                throw new Error("Invalid XML file!")
+              }
             } else {
-              return res.status(500).jsonp({error: "File hashes do not match!"})
+              throw new Error("File hashes do not match!")
             }
           })
 
