@@ -20,6 +20,10 @@ const ResourceSchema = new mongoose.Schema({
         author : String, // id da pessoa que comentou
         text : String
     }],
+    reviews : [{
+        author : String,
+        value : Number
+    }],
     views : Number
 })
 

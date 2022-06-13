@@ -30,12 +30,14 @@ router.use((req, res, next) => {
 
 function adminOrOwner(req, res, next) {
   if(res.locals.auth > 1) next()
-  if(req.params.rid) {
+  else if(req.params.rid) {
     ResourceController.lookup(req.params.rid).then(v => {
       if (v.submittedBy == res.locals.id)
         next()
       else 
         res.status(403).jsonp({error: "Sem permissão."})
+    }).catch(e => {
+      res.status(500).jsonp({error: e})
     })
   } else {
     next()
@@ -76,6 +78,27 @@ router.delete('/recursos/:rid', adminOrOwner, function(req, res, next) {
       })
     })
     res.jsonp(value)
+  }).catch(error => {
+    res.status(500).jsonp({error: error})
+  })
+});
+
+router.get('/recursos/:rid/zip', function(req, res, next) {
+  ResourceController.lookup(req.params.rid).then(value => {
+    var zip = new JSZip()
+    value.files.forEach(f => {
+      let filedata = fs.readFileSync(path.resolve(__dirname + '/../' + f.path))
+      zip.file(f.name, filedata)
+    })
+
+    zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
+      res.set('Content-Type', 'application/zip')
+      res.set('Content-disposition', 'attachment; filename=' + value.title.toLowerCase().split(' ').join('_') + '.zip');
+      res.send(file)
+    }).catch(error => {
+      res.status(501).jsonp({error: error})
+    })
+
   }).catch(error => {
     res.status(500).jsonp({error: error})
   })
@@ -153,6 +176,7 @@ router.post('/recursos', upload.single('file'), function(req, res, next) {
             'resourceType': sip['type'],
             'files': sip.files,
             'comments': [],
+            'reviews': [],
             'views': 0
           }).then(value => {
             res.jsonp(value)

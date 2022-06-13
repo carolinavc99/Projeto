@@ -10,7 +10,13 @@ block mainPage
     if file.mimetype.split('/')[0] == 'image'
       img(src=path)
     else
-      iframe(src=path width="100%" height="600rem")
+      case file.mimetype.split('/')[1] 
+        when 'pdf'
+          iframe(src=path width="100%" height="600rem")
+        when 'xml'
+          div!= xml
+        default
+          p [Pré-visualização do ficheiro não disponível]
     a(href=path class="self-center flex flex-col items-center") 
       p.btn Download
       p.font-light= " (" + (file.size > 1000000 ? (file.size / 1024 / 1024).toFixed(3) + " MB" : (file.size / 1024).toFixed(3) + " KB") + ")"

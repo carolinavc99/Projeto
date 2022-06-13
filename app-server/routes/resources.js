@@ -93,9 +93,61 @@ router.get('/:id/delete', (req, res, next) => {
         res.render('error', {message: "Unauthorized"})
 })
 
+router.get('/:id/download', (req, res, next) => {
+    axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/zip?token=' + req.user.token, {responseType: 'arraybuffer'}).then(value => {
+        res.set(value.headers)
+        res.send(value.data)
+    }).catch(error => {
+        res.render('error', {message: error})
+    })
+})
+
 router.get('/:id/:fid', (req, res, next) => {
     axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '?token=' + req.user.token).then(value => {
-        res.render('file', {file: value.data})
+        if (value.data.mimetype == "text/xml") {
+            axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token).then(xmldata => {
+                xml = xmldata.data
+                xml = xml.replace(/<\/([\wí]+)>/g, (match, p1) => {
+                    let a = "</" + ({
+                        'lista': 'ul',
+                        'listan': 'ol',
+                        'item': 'li',
+                        'para': 'p',
+                        'documento': 'a',
+                        'realce': 'b',
+                        'título': 'h3',
+                        'codigo': 'pre'
+                    }[p1] || "div") + ">"
+                    return a
+                })
+                xml = xml.replace(/<([\wí]+)(\s[^>]*)?>/g, (match, p1, p2) => {
+                    if(p2)
+                        p2 = p2.replace(/url=/g, "class=\"text-violet-200\" href=")
+                    else
+                        p2 = ""
+                    let a = "<" + ({
+                        'lista': 'ul class="list-disc pl-4"',
+                        'listan': 'ol class="list-decimal pl-4"',
+                        'item': 'li',
+                        'para': 'p',
+                        'documento': 'a',
+                        'realce': 'b',
+                        'recursos': 'h3 class="text-xl font-bold mt-4">Recursos</h3><div class="flex flex-col pl-4"',
+                        'corpo': 'h2 class="text-2xl font-bold mt-6">Exercícios</h2><div class="pl-4"',
+                        'enunciado': 'div class="pl-4 space-y-4"',
+                        'título': 'h3 class="text-xl font-bold"',
+                        'codigo': 'pre'
+                    }[p1] || "div") + p2 + ">"
+                    return a
+                })
+                xml = xml.replace(/<!\[CDATA\[|\]\]>/g, '')
+                res.render('file', {file: value.data, xml: xml})
+            }).catch(error => {
+                res.render('error', {message: "File not Found"})
+            })
+        } else {
+            res.render('file', {file: value.data})
+        }
     }).catch(error => {
         res.render('error', {message: error})
     })
@@ -104,7 +156,6 @@ router.get('/:id/:fid', (req, res, next) => {
 router.get('/:id/:fid/:filename', (req, res, next) => {
     axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token, {responseType: 'arraybuffer'}).then(value => {
         res.set(value.headers)
-        console.log(value.headers)
         res.send(value.data)
     }).catch(error => {
         res.render('error', {message: error})
@@ -121,7 +172,11 @@ router.post('/', upload.array('files'), function(req, res, next) {
     sip['type'] = req.body.type
     sip['semester'] = parseInt(req.body.semester)
     sip['academicYearStart'] = parseInt(req.body.year)
-    sip['submissionDate'] = new Date().toISOString().split('T')[0]
+
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    var localISODate = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
+
+    sip['submissionDate'] = localISODate
     sip['authors'] = req.body.authors.split(',').map(x => x.trim())
     sip['submitter'] = req.body.id
     sip['files'] = []
