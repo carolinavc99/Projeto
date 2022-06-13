@@ -124,6 +124,19 @@ router.post('/recursos/:rid/score', function(req, res, next) {
   })
 });
 
+router.post('/recursos/:rid/comment', function(req, res, next) {
+  let newComment = {
+    author: req.body.author,
+    text: req.body.text,
+    timestamp: req.body.timestamp
+  }
+  ResourceController.add_comment(req.params.rid, newComment).then(value => {
+    res.jsonp(value)
+  }).catch(error => {
+    res.status(500).jsonp({error: error})
+  })
+});
+
 router.get('/recursos/:rid/:fid', function(req, res, next) {
   ResourceController.lookup_file(req.params.rid, req.params.fid).then(value => {
     let filedata = {

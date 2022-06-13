@@ -27,6 +27,11 @@ module.exports.add_score = (rid, account, score) => {
     })
 }
 
+module.exports.add_comment = (rid, comment) => {
+    console.log(comment)
+    return Resource.findByIdAndUpdate(rid, {$push: {'comments': comment}}).exec()
+}
+
 module.exports.delete = (rid) => {
     return Resource.findByIdAndDelete(rid).exec()
 }

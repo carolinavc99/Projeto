@@ -18,7 +18,8 @@ const ResourceSchema = new mongoose.Schema({
     }],
     comments : [{
         author : String, // id da pessoa que comentou
-        text : String
+        text : String,
+        timestamp: Date
     }],
     reviews : [{
         author : String,
