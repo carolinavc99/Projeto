@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var jwt = require('jsonwebtoken')
 var User = require('../models/user')
+var mongoose = require('mongoose')
 
 var passport = require('passport')
 

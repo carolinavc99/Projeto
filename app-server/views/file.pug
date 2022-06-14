@@ -5,7 +5,7 @@ block vars
 
 block mainPage
   div.flex.flex-col.gap-6.bg-slate-800.shadow-lg.rounded-xl.py-6.px-10
-    h1.text-xl.font-bold= file.name
+    h1.text-xl.font-bold.break-all= file.name
     - var path = "./" + file._id + "/" + file.name
     if file.mimetype.split('/')[0] == 'image'
       img(src=path)

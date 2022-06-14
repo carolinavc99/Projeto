@@ -8,21 +8,23 @@ block mainPage
 
   if global
     div.bg-slate-700.px-4.py-2.rounded-xl.flex.justify-center
-      form.flex.items-center.gap-2(action="/resources")
-        label(for="tipo" class="font-light") Tipo:
-        select(name="tipo" class="px-1 bg-slate-500")
-          option(value="") ---
-          option(value="teste-exame") Teste/Exame
-          option(value="ficha") Ficha 
-          option(value="slides") Slides
-          option(value="manual") Manual
-          option(value="relatorio") Relatório
-          option(value="tese") Tese
-        div.self-stretch.w-1.bg-slate-500(class="w-[1px]")
-        input(type="text", name="q" class="bg-slate-500 rounded-md px-1" value=q)
-        button(type="submit") 
-          svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")
-            path(fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd")
+      form.flex.items-center.gap-2(action="/resources" class="flex-col md:flex-row")
+        div.flex.gap-2
+          label(for="tipo" class="font-light") Tipo:
+          select(name="tipo" class="px-1 bg-slate-500")
+            option(value="") ---
+            option(value="teste-exame") Teste/Exame
+            option(value="ficha") Ficha 
+            option(value="slides") Slides
+            option(value="manual") Manual
+            option(value="relatorio") Relatório
+            option(value="tese") Tese
+        div.self-stretch.bg-slate-500(class="h-[1px] md:h-auto w-auto md:w-[1px]")
+        div.flex.gap-2
+          input(type="text", name="q" class="bg-slate-500 rounded-md px-1" value=q)
+          button(type="submit") 
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")
+              path(fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd")
 
   ul.flex.flex-col.items-stretch
     each resource in resources
@@ -32,10 +34,9 @@ block mainPage
             p.font-bold.text-xl= resource.title
             p.font-light.text-sm= resource.authors.join(', ')
           div.flex.flex-col.items-end
-            p= typePrettier(resource.resourceType)
-            p= (resource.semester == 0 ? "" : resource.semester + "º semestre") + ` ${resource.academicYearStart}/${(resource.academicYearStart + 1).toString().slice(-2)}`
-            p.font-light.text-sm 
-              | Adicionado
+            p.text-right= typePrettier(resource.resourceType)
+            p.text-right= (resource.semester == 0 ? "" : resource.semester + "º semestre") + ` ${resource.academicYearStart}/${(resource.academicYearStart + 1).toString().slice(-2)}`
+            p.font-light.text-sm.text-right Adicionado
               if global
                 = " por " + resource.submitter
               = " em " + resource.dateUploaded.split('T')[0]

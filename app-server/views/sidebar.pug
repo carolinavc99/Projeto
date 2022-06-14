@@ -4,44 +4,45 @@ block content
   block vars
     - var page = -1
     - var large = false
-  div.flex
-    div(class="sticky h-screen top-0 bottom-0 w-64 bg-slate-800 text-white flex-shrink-0")
-      a(href="/").block.font-bold.p-4.text-2xl.break-words Repositório de Recursos Didáticos
+  div.flex.w-screen
+    div(class="sticky h-screen top-0 bottom-0 left-0 w-16 md:w-64 bg-slate-800 text-white flex-shrink-0")
+      a(href="/" class="hidden md:block").font-bold.p-4.text-2xl.break-words Repositório de Recursos Didáticos
+      a(href="/" class="block md:hidden").font-bold.p-3.text-lg.text-center RRD
       div.flex.flex-col.gap-1.py-6
-        a(class="transition-colors ease-in-out px-2 py-1 text-lg flex items-center gap-2" + (page == 1 ? " bg-violet-600" : " hover:bg-slate-700") href="/resources")
-          svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+        a(class="h-10 transition-colors ease-in-out px-2 py-1 text-lg flex justify-center md:justify-start items-center gap-2" + (page == 1 ? " bg-violet-600" : " hover:bg-slate-700") href="/resources")
+          svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")
             path(d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2h-1.528A6 6 0 004 9.528V4z")
             path(fill-rule="evenodd" d="M8 10a4 4 0 00-3.446 6.032l-1.261 1.26a1 1 0 101.414 1.415l1.261-1.261A4 4 0 108 10zm-2 4a2 2 0 114 0 2 2 0 01-4 0z" clip-rule="evenodd")
-          p Explorar recursos
+          p(class="hidden md:inline-block") Explorar recursos
         if user.authLevel > 0
-          a(class="transition-colors ease-in-out px-2 py-1 text-lg flex items-center gap-2" + (page == 2 ? " bg-violet-600" : " hover:bg-slate-700") href="/resources/user")
-            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+          a(class="h-10 transition-colors ease-in-out px-2 py-1 text-lg flex justify-center md:justify-start items-center gap-2" + (page == 2 ? " bg-violet-600" : " hover:bg-slate-700") href="/resources/user")
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")
               path(d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z")
-            p Os meus recursos
+            p(class="hidden md:inline-block") Os meus recursos
         if user.authLevel > 0
-          a(class="transition-colors ease-in-out px-2 py-1 text-lg flex items-center gap-2" + (page == 3 ? " bg-violet-600" : " hover:bg-slate-700") href="/resources/new")
-            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+          a(class="h-10 transition-colors ease-in-out px-2 py-1 text-lg flex justify-center md:justify-start items-center gap-2" + (page == 3 ? " bg-violet-600" : " hover:bg-slate-700") href="/resources/new")
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")
               path(fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" )
-            p Adicionar recurso
-        a(class="transition-colors ease-in-out px-2 py-1 text-lg flex items-center gap-2" + (page == 4 ? " bg-violet-600" : " hover:bg-slate-700") href="/account")
-          svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+            p(class="hidden md:inline-block") Adicionar recurso
+        a(class="h-10 transition-colors ease-in-out px-2 py-1 text-lg flex justify-center md:justify-start items-center gap-2" + (page == 4 ? " bg-violet-600" : " hover:bg-slate-700") href="/account")
+          svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")
             path(fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd")
-          p Gerir conta
+          p(class="hidden md:inline-block") Gerir conta
         if user.authLevel > 1
-          a(class="transition-colors ease-in-out px-2 py-1 text-lg flex items-center gap-2" + (page == 5 ? " bg-violet-600" : " hover:bg-slate-700") href="/admin")
-            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+          a(class="h-10 transition-colors ease-in-out px-2 py-1 text-lg flex justify-center md:justify-start items-center gap-2" + (page == 5 ? " bg-violet-600" : " hover:bg-slate-700") href="/admin")
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")
               path(d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z")
-            p Painel de admin
+            p(class="hidden md:inline-block") Painel de admin
       div.absolute.bottom-4.w-full.flex.flex-col.items-center.gap-4
-        div.text-center
+        div.text-center(class="hidden md:block")
           p Sessão iniciada como
           p.font-bold= user.username
-        a(href="/logout" class="hover:bg-slate-700 border-2 border-white transition-colors ease-in-out px-3 py-1 rounded-xl shadow-sm shadow-black text-lg flex flex-col items-center")
-          svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 my-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2")
+        a(href="/logout" class="hover:bg-slate-700 border-2 border-white transition-colors ease-in-out px-1 md:px-3 py-1 rounded-xl shadow-sm shadow-black text-lg flex flex-col items-center")
+          svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:my-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2")
             path(stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1")
-          p Terminar sessão
-    div.px-8.py-6.bg-slate-500.text-white.w-full
-      div(class="pb-20 space-y-8 " + (large ? "lg:px-[5%] xl:px-[10%] 2xl:px-[15%]" : "lg:px-[10%] xl:px-[15%] 2xl:px-[30%]"))
+          p(class="hidden md:block") Terminar sessão
+    div.py-6.bg-slate-500.text-white.w-full
+      div(class="pb-20 space-y-8 px-8 " + (large ? "lg:px-[5%] xl:px-[10%] 2xl:px-[15%]" : "lg:px-[10%] xl:px-[15%] 2xl:px-[30%]"))
         block mainPage
       script.
         $(function() {
@@ -49,14 +50,14 @@ block content
             $(e.target).remove()
           })
         })
-      div(class="fixed bottom-4 left-1/2 right-1/2 flex flex-col items-center gap-4")
-        div(class="flex flex-col items-center gap-4 select-none pop-ups")
-          if success.length > 0
-            p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-green-500= success
-          if info.length > 0
-            p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-white= info
-          if warning.length > 0
-            p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-yellow-500= warning
-          if error.length > 0
-            p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-red-500= error
-        block buttons
+    div(class="fixed bottom-4 left-1/2 right-1/2 flex flex-col items-center gap-4")
+      div(class="flex flex-col items-center gap-4 select-none pop-ups")
+        if success.length > 0
+          p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-green-500= success
+        if info.length > 0
+          p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-white= info
+        if warning.length > 0
+          p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-yellow-500= warning
+        if error.length > 0
+          p.bg-slate-800.px-5.py-2.rounded-xl.w-max.shadow-md.dismiss.text-red-500= error
+      block buttons

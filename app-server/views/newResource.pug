@@ -36,7 +36,7 @@ block mainPage
 
   div.flex.flex-col.gap-16(class="bg-slate-700 shadow-lg rounded-xl py-6 px-10")
     form(action="/resources" method="post" enctype="multipart/form-data" class="flex flex-col gap-8")
-      div.grid.gap-x-8.gap-y-2(class="grid-cols-[max-content,1fr]")
+      div.grid.gap-x-8.gap-y-2(class="grid-cols-1 md:grid-cols-[max-content,1fr]")
         label(for="title" class="font-light") Título
         input(type="text", name="title" class="px-2 bg-slate-500") 
 
@@ -53,17 +53,18 @@ block mainPage
           option(value="tese") Tese
           
         label(class="font-light") Relativo a
-        div.flex.gap-3
+        div.flex(class="flex-col md:flex-row gap-1 md:gap-3")
           select(name="semester" class="bg-slate-500")
             option(value='1') 1º Semestre
             option(value='2') 2º Semestre
             option(value='0') Anual
-          p de
-          div.flex
-            input(id="yearInput" type="number" size="1" class="w-14 bg-slate-500" name="year" min="1900" max=new Date().getFullYear())
-            p
-              | /
-              span#year XX
+          div.flex.gap-3
+            p de
+            div.flex
+              input(id="yearInput" type="number" size="1" class="w-14 bg-slate-500" name="year" min="1900" max=new Date().getFullYear())
+              p
+                | /
+                span#year XX
 
         label(for="author" class="font-light flex gap-2 items-center") 
           p Autor(es)
@@ -74,7 +75,7 @@ block mainPage
             p.tooltiptext.font-normal Autores separados por vírgulas.
         input(type="text" name="authors" class="px-2 bg-slate-500")
 
-        label(for="files" class="font-light")
+        label(for="files" class="font-light flex md:flex-col gap-2 items-center md:items-start md:gap-0")
           p Ficheiro(s)
           div.tooltip
             svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
@@ -86,8 +87,8 @@ block mainPage
         div#files_p_div.flex.flex-col.gap-2
           div#files_div.flex.flex-col.gap-2
             div.fileinput
-              input(type="file" name="files")
-          div(id="add_new_file_btn" class="cursor-pointer select-none self-center text-violet-400")
+              input(type="file" name="files" class="w-full")
+          div(id="add_new_file_btn" class="mt-3 md:mt-0 cursor-pointer select-none self-center text-violet-400")
             svg(xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor")
               path(fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd")
           

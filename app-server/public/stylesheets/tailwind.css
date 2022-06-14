@@ -8,7 +8,7 @@ input:-webkit-autofill {
 }
 
 .btn-template {
-    @apply px-4 py-2 rounded-xl shadow-md text-xl transition-colors duration-200;
+    @apply px-4 py-2 rounded-xl shadow-md text-lg md:text-xl transition-colors duration-200 break-words;
 }
 
 .btn {
@@ -24,7 +24,7 @@ input:-webkit-autofill {
 }
 
 .tooltip .tooltiptext {
-    @apply invisible bg-white text-black text-center rounded-md px-3 py-1 w-max text-sm absolute z-10 top-0 -translate-y-full;
+    @apply invisible bg-white text-black text-center rounded-md px-3 py-1 w-max text-sm absolute z-10 top-0 -translate-y-full -translate-x-1/2 md:translate-x-0;
 }
 
 .tooltip:hover .tooltiptext {

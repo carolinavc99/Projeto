@@ -11,32 +11,32 @@ block mainPage
       h2.font-bold.text-xl.pl-4.pb-6 Alterar dados pessoais 
       form(action="/account" method="post").flex.flex-col.items-stretch.gap-6
         input(type="hidden", name="id" value=user['_id'])
-        div.grid.grid-cols-2.gap-x-8.gap-y-2.items-center
+        div.grid.gap-x-8.items-center(class="grid-cols-1 md:grid-cols-2 md:gap-y-2")
           label(for="username" class="font-light") Nome de utilizador
           input(type="text", name="username" class="border border-slate-600 bg-slate-500 px-1" value=user.username) 
 
-          label(for="email" class="font-light") Email
+          label(for="email" class="font-light mt-4 md:mt-0") Email
           input(type="text", name="email" class="border border-slate-600 bg-slate-500 px-1" value=user.email)
         button(type="submit" class="self-center btn") Submeter
 
     div
       h2.font-bold.text-xl.pl-4.pb-6 Alterar password
       form(action="/account/password" method="post").flex.flex-col.items-stretch.gap-6
-        div.grid.grid-cols-2.gap-x-8.gap-y-2.items-center
+        div.grid.gap-x-8.items-center(class="grid-cols-1 md:grid-cols-2 md:gap-y-2")
           label(for="password" class="font-light") Nova password
           input(type="password", class="border border-slate-600 bg-slate-500 px-1" name="password")
 
-          label(for="password_confirm" class="font-light") Nova password (confirmar)
+          label(for="password_confirm" class="font-light mt-4 md:mt-0") Nova password (confirmar)
           input(type="password", class="border border-slate-600 bg-slate-500 px-1" name="password_confirm")
         button(type="submit" class="self-center btn") Submeter
 
     div
-      div.flex.justify-between.items-end.pb-6.gap-3
+      div.flex.justify-between.pb-6.gap-3(class="flex-col items-start md:items-end md:flex-row")
         h2.font-bold.text-xl.pl-4 Token
         button(onclick="copyToClipboard()" id="token-btn" class="font-light")
-          #token-icon-b.flex.items-stretch(class="border-b border-dotted border-slate-500")
-            p Copiar para a área de transferência
-            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+          #token-icon-b.flex(class="bg-slate-600 md:bg-inherit md:border-b border-dotted border-slate-500 items-center gap-2")
+            p.text-right Copiar para a área de transferência
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor")
               path(d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z")
               path(d="M3 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2a1 1 0 110 2h-2v-2z")
           #token-icon-a.flex.items-stretch.hidden.text-green-300.border-b.border-slate-700

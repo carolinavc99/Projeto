@@ -3,20 +3,20 @@ extends layout
 block content
   div.h-screen.bg-slate-800.text-white
     div.h-full.w-full.flex.flex-col.items-center.justify-center.gap-16
-      div.bg-slate-700.px-24.py-10.rounded-xl.shadow-lg
+      div.bg-slate-700.rounded-xl.shadow-lg(class="px-6 py-4 md:px-24 md:py-10")
         form(id="login-form" action="/login",method="post" class="flex flex-col items-stretch gap-6")
-          div(class="grid grid-cols-[max-content,1fr] items-center gap-2 text-2xl")
+          div(class="grid grid-cols-[max-content,1fr] items-center gap-2 text-lg md:text-2xl")
             label(for="email")
-              svg(xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor")
+              svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-8 md:w-8" viewBox="0 0 20 20" fill="currentColor")
                 path(fill-rule="evenodd" d="M14.243 5.757a6 6 0 10-.986 9.284 1 1 0 111.087 1.678A8 8 0 1118 10a3 3 0 01-4.8 2.401A4 4 0 1114 10a1 1 0 102 0c0-1.537-.586-3.07-1.757-4.243zM12 10a2 2 0 10-4 0 2 2 0 004 0z" clip-rule="evenodd")
             input(type="text",name="email" class="bg-slate-500 py-1 px-2" required placeholder="Email")
             
             label(for="password")
-              svg(xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor")
+              svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 md:h-8 md:w-8" viewBox="0 0 20 20" fill="currentColor")
                 path(fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd")
             input(type="password",name="password" class="bg-slate-500 py-1 px-2" required placeholder="Palavra-passe")
 
-          button(type="submit" class="self-center bg-violet-700 px-6 py-2 rounded-xl text-2xl shadow-md hover:bg-violet-600 transition-colors") Iniciar Sessão
+          button(type="submit" class="btn self-center") Iniciar Sessão
 
   div(class="fixed bottom-4 left-1/2 right-1/2 flex flex-col items-center gap-4")
     p.w-max.text-red-600= error
