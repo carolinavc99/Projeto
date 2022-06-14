@@ -67,10 +67,8 @@ router.get('/:id', (req, res, next) => {
             score = (reviews.reduce((acc, x) => acc + x.value, 0) / reviews.length).toFixed(2)
         let userS = reviews.find(x => x.author == req.user._id)
         if(userS) userScore = userS.value
-        console.log(typeof value.data.comments[0].timestamp)
         value.data.comments.sort((a,b) => b.timestamp.localeCompare(a.timestamp))
         UserController.get_info([value.data.submittedBy].concat(value.data.comments.map(x => x.author))).then( userdata => {
-            console.log(userdata)
             value.data.submitter = userdata[0].username
             value.data.submitterEmail = userdata[0].email
             value.data.comments.forEach((c,i) => {
@@ -119,12 +117,22 @@ router.post('/:id/score', (req, res, next) => {
 
 router.post('/:id/comment', (req, res, next) => {
     axios.post('http://localhost:8000/api/recursos/' + req.params.id + '/comment?token=' + req.user.token, {author: req.user._id, text: req.body.comment, timestamp: Date.now()}).then(value => {
-        console.log(req.body.comment)
         req.flash('success', 'Comentário submetido com sucesso!')
         res.redirect("back")
     }).catch(error => {
         res.status(500).send(error.response.data.error)
     })
+})
+
+router.delete('/:id/comment/:cid', (req, res, next) => {
+    if(req.user.authLevel > 1 || req.user._id == value.data.submittedBy) {
+        axios.delete('http://localhost:8000/api/recursos/' + req.params.id + '/comment/' + req.params.cid + '?token=' + req.user.token).then(value => {
+            res.send("Comentário eliminado com sucesso!")
+        }).catch(error => {
+            res.status(500).send(error.response.data.error)
+        })
+    } else
+        res.render('error', {message: "Unauthorized"})
 })
 
 router.get('/:id/download', (req, res, next) => {

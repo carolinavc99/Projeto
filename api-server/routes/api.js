@@ -137,6 +137,28 @@ router.post('/recursos/:rid/comment', function(req, res, next) {
   })
 });
 
+router.delete('/recursos/:rid/comment/:cid', function(req, res, next) {
+  if(res.locals.auth > 1) {
+    ResourceController.delete_comment(req.params.rid, req.params.cid).then(value => {
+      res.jsonp(value)
+    }).catch(error => {
+      res.status(500).jsonp({error: error})
+    })
+  } else {
+    ResourceController.get_comment(req.params.rid, req.params.cid).then(value => {
+      if(value.comments.author == res.locals.id) {
+        ResourceController.delete_comment(req.params.rid, req.params.cid).then(value => {
+          res.jsonp(value)
+        }).catch(error => {
+          res.status(500).jsonp({error: error})
+        })
+      }
+      else
+        res.status(403).jsonp({error: "Sem permissão."})
+    })
+  }
+});
+
 router.get('/recursos/:rid/:fid', function(req, res, next) {
   ResourceController.lookup_file(req.params.rid, req.params.fid).then(value => {
     let filedata = {

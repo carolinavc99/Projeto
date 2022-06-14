@@ -103,11 +103,12 @@ block mainPage
       })
 
       $(".del-btn").on('click', function(e) {
+        let comment = $(this).closest('.comment')
         $.ajax({
           url: "/resources/" + rid + "/comment/" + $(this).data('id'),
           type: "DELETE",
           success: function(result) {
-            console.log("pog")
+            comment.remove()
           }
         })
       })
@@ -138,7 +139,7 @@ block mainPage
     div.bg-slate-500(class="h-[1px]")
     div.flex.flex-col
       each comment in resource.comments
-        div.bg-slate-700.px-4.py-2.flex.justify-between(class="first:rounded-t-lg last:rounded-b-lg border-b border-slate-500 last:border-0")
+        div.comment.bg-slate-700.px-4.py-2.flex.justify-between(class="first:rounded-t-lg last:rounded-b-lg border-b border-slate-500 last:border-0")
           div
             p.font-light.text-sm= comment.authorUsername + " (" + comment.authorEmail + ")"
             p.text-lg= comment.text

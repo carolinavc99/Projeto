@@ -22,6 +22,7 @@ const ResourceSchema = new mongoose.Schema({
         timestamp: Date
     }],
     reviews : [{
+        _id: false,
         author : String,
         value : Number
     }],

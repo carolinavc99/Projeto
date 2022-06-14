@@ -28,8 +28,15 @@ module.exports.add_score = (rid, account, score) => {
 }
 
 module.exports.add_comment = (rid, comment) => {
-    console.log(comment)
     return Resource.findByIdAndUpdate(rid, {$push: {'comments': comment}}).exec()
+}
+
+module.exports.get_comment = (rid, cid) => {
+    return Resource.findOne({_id: rid, 'comments._id': cid}, {'comments.$': 1}).exec()
+}
+
+module.exports.delete_comment = (rid, cid) => {
+    return Resource.findByIdAndUpdate(rid, {$pull: {'comments': {_id: cid}}}).exec()
 }
 
 module.exports.delete = (rid) => {
