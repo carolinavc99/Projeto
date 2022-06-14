@@ -1,4 +1,4 @@
-extends sidebar
+extends ../sidebar
 
 block vars
   - var page = global ? 1 : 2
@@ -12,13 +12,13 @@ block mainPage
         div.flex.gap-2
           label(for="tipo" class="font-light") Tipo:
           select(name="tipo" class="px-1 bg-slate-500")
-            option(value="") ---
-            option(value="teste-exame") Teste/Exame
-            option(value="ficha") Ficha 
-            option(value="slides") Slides
-            option(value="manual") Manual
-            option(value="relatorio") Relatório
-            option(value="tese") Tese
+            option(selected=(type == "") value="") ---
+            option(selected=(type == "teste-exame") value="teste-exame") Teste/Exame
+            option(selected=(type == "ficha") value="ficha") Ficha 
+            option(selected=(type == "slides") value="slides") Slides
+            option(selected=(type == "manual") value="manual") Manual
+            option(selected=(type == "relatorio") value="relatorio") Relatório
+            option(selected=(type == "tese") value="tese") Tese
         div.self-stretch.bg-slate-500(class="h-[1px] md:h-auto w-auto md:w-[1px]")
         div.flex.gap-2
           input(type="text", name="q" class="bg-slate-500 rounded-md px-1" value=q)

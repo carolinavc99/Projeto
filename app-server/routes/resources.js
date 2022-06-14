@@ -13,10 +13,10 @@ const upload = multer({ dest: 'uploads/' })
 
 const UserController = require('../controllers/userController')
 
-router.use((req, res, next) => {
+function producerOrAdmin(req, res, next) {
     if(req.user.authLevel > 0) next()
     else res.render('error', {message: "unauthorized"})
-})
+}
 
 router.get('/', function(req, res, next) {
     let url = 'http://localhost:8000/api/recursos?'
@@ -39,23 +39,23 @@ router.get('/', function(req, res, next) {
                     value.data[i]['submitter'] = "[DELETED]"
                 }
             })
-            res.render('resources', {resources: value.data, global: true, q: req.query.q, tipo: req.query.tipo})
+            res.render('resources/resources', {resources: value.data, global: true, q: req.query.q, tipo: req.query.tipo})
         }).catch( error => { res.render('error', {message: error}) })
     }).catch(error => {
         res.render('error', {message: error})
     })
 })
 
-router.get('/user', function(req, res, next) {
+router.get('/user', producerOrAdmin, function(req, res, next) {
     axios.get('http://localhost:8000/api/recursos?account=' + req.user._id + '&token=' + req.user.token).then( value => {
-        res.render('resources', {resources: value.data, global: false})
+        res.render('resources/resources', {resources: value.data, global: false})
     }).catch(error => {
         res.render('error', {message: error})
     })
 })
 
-router.get('/new', function(req, res, next) {
-    res.render('newResource', {user: req.user})
+router.get('/new', producerOrAdmin, function(req, res, next) {
+    res.render('resources/newResource', {user: req.user})
 });
 
 router.get('/:id', (req, res, next) => {
@@ -69,14 +69,15 @@ router.get('/:id', (req, res, next) => {
         if(userS) userScore = userS.value
         value.data.comments.sort((a,b) => b.timestamp.localeCompare(a.timestamp))
         UserController.get_info([value.data.submittedBy].concat(value.data.comments.map(x => x.author))).then( userdata => {
-            value.data.submitter = userdata[0].username
-            value.data.submitterEmail = userdata[0].email
+            let author = userdata.find(x => x['_id'] == value.data.submittedBy)
+            value.data.submitter = author ? author.username : "[DELETED]"
+            value.data.submitterEmail = author ? author.email : ""
             value.data.comments.forEach((c,i) => {
                 let user = userdata.find(x => x['_id'] == c.author)
-                value.data.comments[i].authorUsername = user.username
-                value.data.comments[i].authorEmail = user.email
+                value.data.comments[i].authorUsername = user ? user.username : "[DELETED]"
+                value.data.comments[i].authorEmail = user ? user.email : ""
             })
-            res.render('resource', {resource: value.data, score: score, userScore: userScore})
+            res.render('resources/resource', {resource: value.data, score: score, userScore: userScore})
         })
     }).catch(error => {
         res.render('error', {message: error})
@@ -84,9 +85,9 @@ router.get('/:id', (req, res, next) => {
 })
 
 router.get('/:id/edit', (req, res, next) => {
-    if(req.user.authLevel > 1 || req.user._id == value.data.submittedBy) {
+    if(req.user.authLevel > 1 || req.user._id.toString() == value.data.submittedBy.toString()) {
         axios.get('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
-            res.render('editResource', {resource: value.data})
+            res.render('resources/editResource', {resource: value.data})
         }).catch(error => {
             res.render('error', {message: error})
         })
@@ -95,7 +96,7 @@ router.get('/:id/edit', (req, res, next) => {
 })
 
 router.get('/:id/delete', (req, res, next) => {
-    if(req.user.authLevel > 1 || req.user._id == value.data.submittedBy) {
+    if(req.user.authLevel > 1 || req.user._id.toString() == value.data.submittedBy.toString()) {
         axios.delete('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
             req.flash('success', 'Recurso removido com sucesso!')
             res.redirect('/resources/user')
@@ -125,7 +126,7 @@ router.post('/:id/comment', (req, res, next) => {
 })
 
 router.delete('/:id/comment/:cid', (req, res, next) => {
-    if(req.user.authLevel > 1 || req.user._id == value.data.submittedBy) {
+    if(req.user.authLevel > 1 || req.user._id.toString() == value.data.submittedBy.toString()) {
         axios.delete('http://localhost:8000/api/recursos/' + req.params.id + '/comment/' + req.params.cid + '?token=' + req.user.token).then(value => {
             res.send("Comentário eliminado com sucesso!")
         }).catch(error => {
@@ -192,12 +193,12 @@ router.get('/:id/:fid', (req, res, next) => {
                     return a
                 })
                 xml = xml.replace(/<!\[CDATA\[|\]\]>/g, '')
-                res.render('file', {file: value.data, xml: xml})
+                res.render('resources/file', {file: value.data, xml: xml})
             }).catch(error => {
                 res.render('error', {message: "File not Found"})
             })
         } else {
-            res.render('file', {file: value.data})
+            res.render('resources/file', {file: value.data})
         }
     }).catch(error => {
         res.render('error', {message: error})
@@ -213,7 +214,7 @@ router.get('/:id/:fid/:filename', (req, res, next) => {
     })
 })
 
-router.post('/', upload.array('files'), function(req, res, next) {
+router.post('/', producerOrAdmin, upload.array('files'), function(req, res, next) {
     let zip = new JSZip()
     zip.file('bagit.txt', 'BagIt-Version: "1.0"\nTag-File-Character-Encoding: "UTF-8"')
 
@@ -271,7 +272,7 @@ router.post('/', upload.array('files'), function(req, res, next) {
 
 
 router.post('/:id', upload.array('files'), function(req, res, next) {
-    if(req.user.authLevel > 1 || req.user._id == value.data.submittedBy) {
+    if(req.user.authLevel > 1 || req.user._id.toString() == value.data.submittedBy.toString()) {
 
         let zip = new JSZip()
         zip.file('bagit.txt', 'BagIt-Version: "1.0"\nTag-File-Character-Encoding: "UTF-8"')

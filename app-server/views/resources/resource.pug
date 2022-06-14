@@ -1,4 +1,4 @@
-extends sidebar
+extends ../sidebar
 
 block mainPage
   h1.text-center.text-3xl.font-bold= resource.title
@@ -20,7 +20,7 @@ block mainPage
         = resource.academicYearStart + "/" + (resource.academicYearStart + 1).toString().slice(-2)
       
       p(class="mt-4 first:mt-0 md:mt-0").font-light Adicionado por
-      p= resource.submitter + " (" + resource.submitterEmail + ")"
+      p= resource.submitter + (resource.submitterEmail ? " (" + resource.submitterEmail + ")" : "")
 
       p(class="mt-4 first:mt-0 md:mt-0").font-light Adicionado em
       p= resource.dateUploaded.split('T')[0]
@@ -139,18 +139,18 @@ block mainPage
     div.bg-slate-500(class="h-[1px]")
     div.flex.flex-col
       each comment in resource.comments
-        div.comment.bg-slate-700.px-4.py-2.flex.justify-between(class="first:rounded-t-lg last:rounded-b-lg border-b border-slate-500 last:border-0 flex-col md:flex-row")
+        div.comment.bg-slate-700.px-4.py-2.flex.justify-between(class="first:rounded-t-lg last:rounded-b-lg border-b border-slate-500 last:border-0 flex-col lg:flex-row")
           div
-            p.font-light.text-sm= comment.authorUsername + " (" + comment.authorEmail + ")"
+            p.font-light.text-sm= comment.authorUsername + (comment.authorEmail ? " (" + comment.authorEmail + ")" : "")
             p.text-lg= comment.text
-          div.flex(class="md:flex-col justify-between items-center md:justify-start md:items-end mt-6 md:mt-0")
+          div.flex(class="lg:flex-col justify-between items-center lg:justify-start lg:items-end mt-6 lg:mt-0")
             p=new Date(comment.timestamp).toLocaleString()
             if comment.author == user._id || user.authLevel > 1
               svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 del-btn text-red-400" viewBox="0 0 20 20" fill="currentColor" data-id=comment._id)
                 path(fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd")
             
 block buttons
-  if user.authLevel > 1 || user._id == resource.submittedBy
+  if user.authLevel > 1 || user._id.toString() == resource.submittedBy.toString()
     div.flex.gap-4
       a(href="./" + resource._id + '/edit' class="flex items-center btn w-min gap-2")
         svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")

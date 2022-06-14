@@ -26,7 +26,8 @@ const ResourceSchema = new mongoose.Schema({
         author : String,
         value : Number
     }],
-    views : Number
+    views : Number,
+    downloads : Number
 })
 
 module.exports = mongoose.model('Resource', ResourceSchema)

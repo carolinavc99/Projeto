@@ -1,33 +1,16 @@
-extends sidebar
+extends ../sidebar
+
+block vars
+  - var page = 3
 
 block mainPage
-  h1.text-center.text-3xl.font-bold Editar Recurso
+  h1.text-center.text-3xl.font-bold Novo Recurso
 
   script.
     $(function(){
+      var currentYear = new Date().getFullYear()
 
-      var resourceType = "#{resource.resourceType}"
-      var semester = "#{resource.semester}"
-      var currentYear = parseInt($('#yearInput').val())
-
-      var typeSelect = document.getElementById('typeSelect')
-
-      for(var i, j = 0; i = typeSelect.options[j]; j++) {
-        if(i.value == resourceType) {
-          typeSelect.selectedIndex = j;
-          break;
-        }
-      }
-
-      var semesterSelect = document.getElementById('semesterSelect')
-
-      for(var i, j = 0; i = semesterSelect.options[j]; j++) {
-        if(i.value == semester) {
-          semesterSelect.selectedIndex = j;
-          break;
-        }
-      }
-
+      $("#yearInput").val(currentYear)
       $('#year').text((currentYear + 1).toString().slice(-2))
 
       $("#yearInput").on('input', e => {
@@ -52,35 +35,36 @@ block mainPage
     })
 
   div.flex.flex-col.gap-16(class="bg-slate-700 shadow-lg rounded-xl py-6 px-10")
-    form(action="/resources/" + resource._id method="post" enctype="multipart/form-data" class="flex flex-col gap-8")
-      div.grid.gap-x-8.gap-y-2(class="grid-cols-[max-content,1fr]")
+    form(action="/resources" method="post" enctype="multipart/form-data" class="flex flex-col gap-8")
+      div.grid.gap-x-8.gap-y-2(class="grid-cols-1 md:grid-cols-[max-content,1fr]")
         label(for="title" class="font-light") Título
-        input(type="text", name="title" class="px-2 bg-slate-500" value=resource.title) 
+        input(type="text", name="title" class="px-2 bg-slate-500") 
 
         label(for="description" class="font-light") Descrição
-        textarea(name="description", cols="30", rows="5" class="px-2 py-1 bg-slate-500")= resource.description
+        textarea(name="description", cols="30", rows="5" class="px-2 py-1 bg-slate-500") 
 
         label(for="type" class="font-light") Tipo de Recurso
-        select#typeSelect(name="type" class="px-1 bg-slate-500")
+        select(name="type" class="px-1 bg-slate-500")
           option(value="teste-exame") Teste/Exame
-          option(value="ficha") Ficha
+          option(value="ficha") Ficha 
           option(value="slides") Slides
           option(value="manual") Manual
           option(value="relatorio") Relatório
           option(value="tese") Tese
           
         label(class="font-light") Relativo a
-        div.flex.gap-3
-          select#semesterSelect(name="semester" class="bg-slate-500")
+        div.flex(class="flex-col md:flex-row gap-1 md:gap-3")
+          select(name="semester" class="bg-slate-500")
             option(value='1') 1º Semestre
             option(value='2') 2º Semestre
             option(value='0') Anual
-          p de
-          div.flex
-            input(id="yearInput" type="number" size="1" class="w-14 bg-slate-500" name="year" min="1900" max=new Date().getFullYear() value=resource.academicYearStart)
-            p
-              | /
-              span#year XX
+          div.flex.gap-3
+            p de
+            div.flex
+              input(id="yearInput" type="number" size="1" class="w-14 bg-slate-500" name="year" min="1900" max=new Date().getFullYear())
+              p
+                | /
+                span#year XX
 
         label(for="author" class="font-light flex gap-2 items-center") 
           p Autor(es)
@@ -89,28 +73,24 @@ block mainPage
             svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
               path(fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd")
             p.tooltiptext.font-normal Autores separados por vírgulas.
-        input(type="text" name="authors" class="px-2 bg-slate-500" value=resource.authors.join(', '))
+        input(type="text" name="authors" class="px-2 bg-slate-500")
 
-        input(type="hidden", name="nfiles" value=resource.files.length)
-        label(class="font-light") 
+        label(for="files" class="font-light flex md:flex-col gap-2 items-center md:items-start md:gap-0")
           p Ficheiro(s)
-          p a remover
-        div.flex.flex-col
-          each file, index in resource.files
-            div.space-x-2
-              input(type="checkbox" name="file" + index value=file._id)
-              label= file.name
-
-        label(for="files" class="font-light") 
-          p Ficheiro(s)
-          p a adicionar
+          div.tooltip
+            svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+              path(fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd")
+            p.tooltiptext.font-normal Ficheiros XML devem seguir
+              |  
+              a(href="/aulaP.xsd" target="_blank" class="text-violet-500") este schema
+              | .
         div#files_p_div.flex.flex-col.gap-2
           div#files_div.flex.flex-col.gap-2
             div.fileinput
-              input(type="file" name="files")
-          div(id="add_new_file_btn" class="cursor-pointer select-none self-center text-violet-400")
+              input(type="file" name="files" class="w-full")
+          div(id="add_new_file_btn" class="mt-3 md:mt-0 cursor-pointer select-none self-center text-violet-400")
             svg(xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor")
               path(fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd")
-
+          
       input(type="hidden", name="id" value=user['_id'])
-      button(type="submit" class="self-center btn") Submeter
+      button(type="submit" class="self-center btn") Adicionar
