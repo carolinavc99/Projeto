@@ -15,7 +15,7 @@ const UserController = require('../controllers/userController')
 
 function producerOrAdmin(req, res, next) {
     if(req.user.authLevel > 0) next()
-    else res.render('error', {message: "unauthorized"})
+    else res.render('error', {message: "Não tem permissão para aceder a esta página."})
 }
 
 router.get('/', function(req, res, next) {
@@ -42,7 +42,7 @@ router.get('/', function(req, res, next) {
             res.render('resources/resources', {resources: value.data, global: true, q: req.query.q, tipo: req.query.tipo})
         }).catch( error => { res.render('error', {message: error}) })
     }).catch(error => {
-        res.render('error', {message: error})
+        res.render('error', {message: error.response.data.error})
     })
 })
 
@@ -50,7 +50,7 @@ router.get('/user', producerOrAdmin, function(req, res, next) {
     axios.get('http://localhost:8000/api/recursos?account=' + req.user._id + '&token=' + req.user.token).then( value => {
         res.render('resources/resources', {resources: value.data, global: false})
     }).catch(error => {
-        res.render('error', {message: error})
+        res.render('error', {message: error.response.data.error})
     })
 })
 
@@ -80,7 +80,7 @@ router.get('/:id', (req, res, next) => {
             res.render('resources/resource', {resource: value.data, score: score, userScore: userScore})
         })
     }).catch(error => {
-        res.render('error', {message: error})
+        res.render('error', {message: error.response.data.error})
     })
 })
 
@@ -89,7 +89,7 @@ router.get('/:id/edit', (req, res, next) => {
         axios.get('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
             res.render('resources/editResource', {resource: value.data})
         }).catch(error => {
-            res.render('error', {message: error})
+            res.render('error', {message: error.response.data.error})
         })
     } else
         res.render('error', {message: "Unauthorized"})
@@ -101,7 +101,7 @@ router.get('/:id/delete', (req, res, next) => {
             req.flash('success', 'Recurso removido com sucesso!')
             res.redirect('/resources/user')
         }).catch(error => {
-            res.render('error', {message: error})
+            res.render('error', {message: error.response.data.error})
         })
     } else
         res.render('error', {message: "Unauthorized"})
@@ -141,7 +141,7 @@ router.get('/:id/download', (req, res, next) => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
-        res.render('error', {message: error})
+        res.render('error', {message: error.response.data.error})
     })
 })
 
@@ -201,7 +201,7 @@ router.get('/:id/:fid', (req, res, next) => {
             res.render('resources/file', {file: value.data})
         }
     }).catch(error => {
-        res.render('error', {message: error})
+        res.render('error', {message: error.response.data.error})
     })
 })
 
@@ -210,7 +210,7 @@ router.get('/:id/:fid/:filename', (req, res, next) => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
-        res.render('error', {message: error})
+        res.render('error', {message: error.response.data.error})
     })
 })
 

@@ -11,25 +11,37 @@ router.get('/register', function(req, res) {
 });
   
 // handling user sign up
-router.post("/register", function(req, res){
-    let authLevel = parseInt(req.body.authLevel)
-    let id = new mongoose.Types.ObjectId();
-    let token = jwt.sign({"id": id.toString(),"auth": authLevel}, 'RPCW2022-Projeto')
-    User.register(new User({
-        _id: id,
-        username: req.body.username,
-        email: req.body.email,
-        authLevel: authLevel,
-        token: token
-        }), req.body.password, function(err, user){
-        if(err){
-            console.log(err);
-            return res.render("register");
-        }
-        passport.authenticate("local")(req, res, function(){
-            res.redirect("/");
+router.post("/register", function(req, res, next){
+    if (req.body.password == req.body['password_confirm']) {
+        let authLevel = 0
+        let id = new mongoose.Types.ObjectId();
+        let token = jwt.sign({"id": id.toString(),"auth": authLevel}, 'RPCW2022-Projeto')
+        User.register(new User({
+            _id: id,
+            username: req.body.username,
+            email: req.body.email,
+            authLevel: authLevel,
+            token: token
+            }), req.body.password, function(err, user){
+            if(err){
+                if (err.message == "A user with the given username is already registered") {
+                    req.flash('error', "Endereço de email já em uso por outro utilizador.")
+                }
+                else {
+                    req.flash('error', err.message)
+                }
+                res.redirect('back')
+            }
+            else {
+                passport.authenticate("local")(req, res, function(){
+                    res.redirect("/");
+                });
+            }
         });
-    });
+    } else {
+        req.flash('error', "Palavras-passe não correspondem!")
+        res.redirect('back')
+    }
 });
 
 router.get("/login", function(req, res){

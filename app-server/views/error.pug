@@ -1,6 +1,7 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  div.h-screen.bg-slate-800.text-white
+    div.h-full.w-full.flex.flex-col.items-center.justify-center.gap-6
+      h1.text-6xl.font-bold Erro:
+      h2= message

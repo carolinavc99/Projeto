@@ -9,12 +9,20 @@ module.exports.list = (filters) => {
     return Resource.find(filters).exec()
 }
 
+module.exports.list_top = (n) => {
+    return Resource.aggregate([{$addFields: {'popularity': {$add: ["$views", "$downloads"]}}},{$sort: {'popularity': -1}},{$limit: n}]).exec()
+}
+
 module.exports.lookup = (rid) => {
     return Resource.findById(rid).exec()
 }
 
 module.exports.add_view = (rid) => {
     return Resource.findByIdAndUpdate(rid, {$inc: {views: 1}}).exec()
+}
+
+module.exports.add_download = (rid) => {
+    return Resource.findByIdAndUpdate(rid, {$inc: {downloads: 1}}).exec()
 }
 
 module.exports.add_score = (rid, account, score) => {

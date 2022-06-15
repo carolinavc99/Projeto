@@ -3,7 +3,6 @@ var router = express.Router();
 var path = require('path')
 const libxmljs = require('libxmljs2')
 
-const jwt = require('jsonwebtoken')
 const JSZip = require('jszip')
 const crypto = require('crypto')
 
@@ -25,20 +24,6 @@ function validXML(xml) {
   return valid
 }
 
-router.use((req, res, next) => {
-  let token = req.query.token || req.header('token')
-  if(token) {
-    jwt.verify(token, 'RPCW2022-Projeto', (err, payload) => {
-      if (err || !payload.auth) return res.status(400).jsonp({error: "Token inválido"})
-      res.locals.auth = payload.auth
-      res.locals.id = payload.id
-      next()
-    })
-  } else {
-    res.status(401).jsonp({error: "Token não encontrado."})
-  }
-})
-
 function adminOrOwner(req, res, next) {
   if(res.locals.auth > 1) next()
   else if(req.params.rid) {
@@ -54,6 +39,30 @@ function adminOrOwner(req, res, next) {
     next()
   }
 }
+
+router.get('/log', function(req, res, next) {
+  if(res.locals.auth > 1) {
+    if(req.query.n) {
+      let lines = fs.readFileSync(path.resolve(__dirname + '/../access.log')).toString().split(/\r?\n/).reverse()
+      let log = []
+      for(let i = 1; i <= parseInt(req.query.n); i++) {
+        let m = /\[(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})[^{]+{user: ([^,]+)[^}]+} (\w+ .*)\s+\d+\s*$/.exec(lines[i])
+        log.push({
+          'date': m[1],
+          'time': m[2],
+          'user': m[3],
+          'request': m[4]
+        })
+      }
+      res.jsonp(log)
+    }
+    else {
+      res.sendFile(path.resolve(__dirname + '/../access.log'))
+    }
+  } else {
+    res.status(403).jsonp({error: "Sem permissão."})
+  }
+})
 
 router.get('/recursos', function(req, res, next) {
   filters = {}
@@ -73,12 +82,21 @@ router.get('/recursos', function(req, res, next) {
   })
 });
 
+router.get('/recursos/top', function(req, res, next) {
+  let n = req.query.n || 20
+  ResourceController.list_top(n).then(value => {
+    res.jsonp(value)
+  }).catch(error => {
+    res.status(500).jsonp({error: error})
+  })
+});
+
 router.get('/recursos/:rid', function(req, res, next) {
   ResourceController.lookup(req.params.rid).then(value => {
     ResourceController.add_view(req.params.rid)
     res.jsonp(value)
   }).catch(error => {
-    res.status(500).jsonp({error: error})
+    res.status(500).jsonp({error: "Recurso não encontrado."})
   })
 });
 
@@ -102,6 +120,8 @@ router.get('/recursos/:rid/zip', function(req, res, next) {
       let filedata = fs.readFileSync(path.resolve(__dirname + '/../' + f.path))
       zip.file(f.name, filedata)
     })
+
+    ResourceController.add_download(req.params.rid)
 
     zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
       res.set('Content-Type', 'application/zip')
@@ -236,7 +256,8 @@ router.post('/recursos', upload.single('file'), function(req, res, next) {
             'files': sip.files,
             'comments': [],
             'reviews': [],
-            'views': 0
+            'views': 0,
+            'downloads': 0
           }).then(value => {
             res.jsonp(value)
           }).catch(error => {

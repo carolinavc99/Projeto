@@ -1,0 +1,49 @@
+extends ../sidebar
+
+block vars
+  - var page = 5
+  - var large = true
+
+block mainPage
+  h1.text-center.text-3xl.font-bold Estatísticas de Utilização
+  .bg-slate-800.px-6.py-4.rounded-xl.shadow-lg.flex.flex-col.items-center.gap-6
+    h2.text-center.text-xl.font-bold Recursos mais consultados
+    table(class="sortable border-collapse")
+      tr
+        th.border-b.border-r.border-slate-500.px-2 Informação
+        th.border-b.border-r.border-slate-500.px-2 Visualizações 
+        th.border-b.border-slate-500.px-2 Transferências
+
+      script.
+        $(function() {
+          $('.resource').on('click', function(e) {
+            window.location.href = "/resources/" + $(this).data('id')
+          })
+        })
+
+      each resource in resources
+        tr.resource.cursor-pointer(data-id=resource._id)
+          td.border-t.border-r.border-slate-500.px-2
+            .grid(class="grid-cols-[6rem,1fr]")
+              p.contents
+                span.font-light Título
+                = resource.title
+              p.contents
+                span.font-light Autor(es)
+                = resource.authors.join(', ')
+          td.border.border-b-0.border-slate-500.text-center= resource.views
+          td.border-t.border-l.border-slate-500.text-center= resource.downloads
+
+  .bg-slate-800.px-6.py-4.rounded-xl.shadow-lg.flex.flex-col.items-center.gap-6
+    h2.text-center.text-xl.font-bold Log de operações na API
+      span.font-light= " (operações mais recentes)"
+    .grid(class="grid-cols-[1fr,2fr,3fr]")
+      p.font-bold Timestamp
+      p.font-bold Utilizador
+      p.font-bold Pedido
+      each line in log
+        p.break-words.pr-6= line.date + " " + line.time
+        p.pr-6= line.user
+        p.break-all= line.request
+
+    a(href="stats/log" target="_blank" class="btn") Ver log completo
