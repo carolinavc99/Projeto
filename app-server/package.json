@@ -7,7 +7,8 @@
     "build:css": "postcss public/stylesheets/tailwind.css -o public/stylesheets/style.css",
     "watch:css": "postcss public/stylesheets/tailwind.css -o public/stylesheets/style.css --watch",
     "watch": "nodemon ./bin/www --ignore *.json",
-    "dev": "concurrently \"npm:watch:css\" \"npm:watch\""
+    "dev": "concurrently \"npm:watch:css\" \"npm:watch\"",
+    "seed": "node ./seed.js"
   },
   "dependencies": {
     "axios": "^0.27.2",
