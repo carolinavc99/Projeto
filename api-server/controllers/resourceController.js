@@ -9,6 +9,12 @@ module.exports.list = (filters) => {
     return Resource.find(filters).sort({dateUploaded: -1}).exec()
 }
 
+module.exports.list_recent = (n) => {
+    let date = new Date()
+    date.setDate(new Date().getDate() - 7)
+    return Resource.find({timestamp: {$gte: date}}).sort({dateUploaded: -1}).limit(n).exec()
+}
+
 module.exports.list_top = (n) => {
     return Resource.aggregate([{$addFields: {'popularity': {$add: ["$views", "$downloads"]}}},{$sort: {'popularity': -1}},{$limit: n}]).exec()
 }

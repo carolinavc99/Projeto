@@ -25,3 +25,29 @@ block mainPage
       svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
         path(d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z")
       p Ver todas as notificações
+
+  div.space-y-4
+    h2.text-2xl.font-bold.text-center Recursos adicionados recentemente
+    ul.flex.flex-col.items-stretch
+      each resource in resources
+        li.bg-slate-800(class="border-y border-slate-500 first:rounded-t-md first:border-t-0 last:rounded-b-md last:border-b-0")
+          a.block.px-4.py-2.flex.justify-between(href="/resources/" + resource._id)
+            div
+              p.font-bold.text-xl= resource.title
+              p.font-light.text-sm= resource.authors.join(', ')
+            div.flex.flex-col.items-end
+              p.text-right= typePrettier(resource.resourceType)
+              p.text-right= (resource.semester == 0 ? "" : resource.semester + "º semestre") + ` ${resource.academicYearStart}/${(resource.academicYearStart + 1).toString().slice(-2)}`
+              p.font-light.text-sm.text-right Adicionado
+                if global
+                  = " por " + resource.submitter
+                = " em " + resource.dateUploaded.split('T')[0]
+      else
+        li.bg-slate-800(class="border-y border-slate-500 first:rounded-t-md first:border-t-0 last:rounded-b-md last:border-b-0")
+          .px-4.py-2
+            p.text-center.font-light [Não há recursos para mostrar]
+
+    a(href="resources" class="btn-template bg-slate-700 text-center hover:bg-slate-800 flex items-center justify-center gap-3") 
+      svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+        path(fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd")
+      p Ver todos os recursos

@@ -65,21 +65,29 @@ router.get('/log', function(req, res, next) {
 })
 
 router.get('/recursos', function(req, res, next) {
-  filters = {}
-  if(req.query.account) {
-    filters['submittedBy'] = req.query.account
+  if(req.query.recent) {
+    ResourceController.list_recent(parseInt(req.query.recent)).then(value => {
+      res.jsonp(value)
+    }).catch(error => {
+      res.status(500).jsonp({error: error})
+    })
+  } else {
+    filters = {}
+    if(req.query.account) {
+      filters['submittedBy'] = req.query.account
+    }
+    if(req.query.q) {
+      filters['title'] = {"$regex": req.query.q, "$options": "i"}
+    }
+    if(req.query.tipo) {
+      filters['resourceType'] = req.query.tipo
+    }
+    ResourceController.list(filters).then(value => {
+      res.jsonp(value)
+    }).catch(error => {
+      res.status(500).jsonp({error: error})
+    })
   }
-  if(req.query.q) {
-    filters['title'] = {"$regex": req.query.q, "$options": "i"}
-  }
-  if(req.query.tipo) {
-    filters['resourceType'] = req.query.tipo
-  }
-  ResourceController.list(filters).then(value => {
-    res.jsonp(value)
-  }).catch(error => {
-    res.status(500).jsonp({error: error})
-  })
 });
 
 router.get('/recursos/top', function(req, res, next) {
