@@ -75,4 +75,12 @@ router.post('/notifications', function(req, res, next) {
     })
 })
 
+router.delete('/notifications/:nid', function(req, res, next) {
+    NotificationController.delete(req.params.nid).then(v => {
+        res.send('Notificação removida com sucesso!')
+    }).catch(e => {
+        res.status(500).send("Erro na remoção da notificação.")
+    })
+})
+
 module.exports = router;

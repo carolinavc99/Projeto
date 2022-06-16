@@ -16,3 +16,7 @@ module.exports.insert = (notif) => {
     let newNotif = new Notification(notif)
     return newNotif.save()
 }
+
+module.exports.delete = (nid) => {
+    return Notification.findByIdAndDelete(nid).exec()
+}
