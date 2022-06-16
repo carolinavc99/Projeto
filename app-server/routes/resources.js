@@ -46,9 +46,9 @@ router.get('/', function(req, res, next) {
     })
 })
 
-router.get('/user', producerOrAdmin, function(req, res, next) {
-    axios.get('http://localhost:8000/api/recursos?account=' + req.user._id + '&token=' + req.user.token).then( value => {
-        res.render('resources/resources', {resources: value.data, global: false})
+router.get('/user/:uid', producerOrAdmin, function(req, res, next) {
+    axios.get('http://localhost:8000/api/recursos?account=' + req.params.uid + '&token=' + req.user.token).then( value => {
+        res.render('resources/resources', {resources: value.data, global: false, userpage: req.params.uid == req.user._id})
     }).catch(error => {
         res.render('error', {message: error.response.data.error})
     })
@@ -80,7 +80,7 @@ router.get('/:id', (req, res, next) => {
             res.render('resources/resource', {resource: value.data, score: score, userScore: userScore})
         })
     }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {error: error.response, message: error.response.data.error})
     })
 })
 
@@ -224,11 +224,6 @@ router.post('/', producerOrAdmin, upload.array('files'), function(req, res, next
     sip['type'] = req.body.type
     sip['semester'] = parseInt(req.body.semester)
     sip['academicYearStart'] = parseInt(req.body.year)
-
-    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-    var localISODate = (new Date(Date.now() - tzoffset)).toISOString().split('T')[0];
-
-    sip['submissionDate'] = localISODate
     sip['authors'] = req.body.authors.split(',').map(x => x.trim())
     sip['submitter'] = req.body.id
     sip['files'] = []

@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 
 const UserController = require('../controllers/userController')
+const NotificationController = require('../controllers/notificationController')
 
 router.use((req, res, next) => {
     if(req.user.authLevel > 1) next()
@@ -56,6 +57,21 @@ router.get('/stats/log', function(req, res, next) {
         res.send(value.data)
     }).catch(error => {
         res.render('error', {message: error.response.data.error})
+    })
+})
+
+router.post('/notifications', function(req, res, next) {
+    let newNotif = {
+        ...req.body,
+        'timestamp': new Date(),
+        'author': req.user._id
+    }
+    NotificationController.insert(newNotif).then(v => {
+        req.flash('success', "Notificação criada com sucesso!")
+        res.redirect('back')
+    }).catch(e => {
+        req.flash('error', "Erro na criação da notificação")
+        res.redirect('back')
     })
 })
 

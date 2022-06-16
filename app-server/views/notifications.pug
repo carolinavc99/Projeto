@@ -1,0 +1,38 @@
+extends sidebar
+
+block mainPage
+  h1.text-center.text-3xl.font-bold Notificações
+
+  if user.authLevel > 1
+    .flex.flex-col.gap-4(class="bg-slate-700 shadow-lg rounded-xl py-4 px-10")
+      h2.text-xl.font-bold.text-center Nova notificação
+      form(action="/admin/notifications" method="post" class="flex flex-col gap-4")
+        .grid.gap-x-8.gap-y-2(class="grid-cols-1 md:grid-cols-[max-content,1fr]")
+          label(for="title" class="font-light") Título
+          input(type="text", name="title" class="px-2 bg-slate-500") 
+
+          label(for="content" class="font-light") Conteúdo
+          textarea(name="content", rows="5" class="px-2 py-1 bg-slate-500 resize-none")= ""
+
+        button(type="submit" class="btn self-center") Submeter
+
+
+  ul.flex.flex-col.items-stretch
+    each notif in notifications
+      li.bg-slate-800(class="border-y border-slate-500 first:rounded-t-md first:border-t-0 last:rounded-b-md last:border-b-0")
+        .px-4.py-2.space-y-4
+          .flex.justify-between
+            div
+              p.font-bold.text-xl= notif.title
+              p.text-sm= notif.timestamp.toLocaleString().split(', ').join(' ').slice(0,-3)
+            div.flex.flex-col.items-end.justify-between.flex-shrink-0
+              a(href="/resources/user/" + notif.author class="text-violet-200").text-right= notif.authorUsername
+              if user.authLevel > 1
+                svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 del-btn text-red-400 cursor-pointer" viewBox="0 0 20 20" fill="currentColor")
+                  path(fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd")
+          p= notif.content
+    else
+      li.bg-slate-800(class="border-y border-slate-500 first:rounded-t-md first:border-t-0 last:rounded-b-md last:border-b-0")
+        .px-4.py-2
+          p.text-center.font-light [Não há notificações para mostrar]
+  

@@ -1,4 +1,27 @@
 extends sidebar
 
 block mainPage
-  h1 Olá, #{user.username}!
+  h1.text-4xl.font-bold Olá, #{user.username}! 👋
+
+  div.space-y-4
+    h2.text-2xl.font-bold.text-center Notificações mais recentes
+    ul.flex.flex-col.items-stretch
+      each notif in notifications
+        li.bg-slate-800(class="border-y border-slate-500 first:rounded-t-md first:border-t-0 last:rounded-b-md last:border-b-0")
+          .px-4.py-2.space-y-4
+            .flex.justify-between
+              div
+                p.font-bold.text-xl= notif.title
+                p.text-sm= notif.timestamp.toLocaleString().split(', ').join(' ').slice(0,-3)
+              div.flex.flex-col.items-end.justify-between.flex-shrink-0
+                a(href="/resources/user/" + notif.author class="text-violet-200").text-right= notif.authorUsername
+            p= notif.content
+      else
+        li.bg-slate-800(class="border-y border-slate-500 first:rounded-t-md first:border-t-0 last:rounded-b-md last:border-b-0")
+          .px-4.py-2
+            p.text-center.font-light [Não há notificações para mostrar]
+    
+    a(href="notifications" class="btn-template bg-slate-700 text-center hover:bg-slate-800 flex items-center justify-center gap-3") 
+      svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
+        path(d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z")
+      p Ver todas as notificações

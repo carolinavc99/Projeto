@@ -1,7 +1,7 @@
 extends ../sidebar
 
 block vars
-  - var page = global ? 1 : 2
+  - var page = global ? 1 : (userpage ? 2 : -1)
 
 block mainPage
   h1.text-center.text-3xl.font-bold= "Recursos" + (global ? "" : " de " + user.username) 

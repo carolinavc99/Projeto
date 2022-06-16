@@ -20,7 +20,7 @@ block mainPage
         = resource.academicYearStart + "/" + (resource.academicYearStart + 1).toString().slice(-2)
       
       p(class="mt-4 first:mt-0 md:mt-0").font-light Adicionado por
-      p= resource.submitter + (resource.submitterEmail ? " (" + resource.submitterEmail + ")" : "")
+      a(href="user/" + resource.submittedBy class="text-violet-200")= resource.submitter + (resource.submitterEmail ? " (" + resource.submitterEmail + ")" : "")
 
       p(class="mt-4 first:mt-0 md:mt-0").font-light Adicionado em
       p= resource.dateUploaded.split('T')[0]

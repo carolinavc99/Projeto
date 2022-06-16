@@ -6,7 +6,7 @@ module.exports.insert = (r) => {
 }
 
 module.exports.list = (filters) => {
-    return Resource.find(filters).exec()
+    return Resource.find(filters).sort({dateUploaded: -1}).exec()
 }
 
 module.exports.list_top = (n) => {

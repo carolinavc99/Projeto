@@ -38,7 +38,7 @@ block mainPage
     form(action="/resources" method="post" enctype="multipart/form-data" class="flex flex-col gap-8")
       div.grid.gap-x-8.gap-y-2(class="grid-cols-1 md:grid-cols-[max-content,1fr]")
         label(for="title" class="font-light") Título
-        input(type="text", name="title" class="px-2 bg-slate-500") 
+        input(type="text", name="title" class="px-2 bg-slate-500" required) 
 
         label(for="description" class="font-light") Descrição
         textarea(name="description", cols="30", rows="5" class="px-2 py-1 bg-slate-500") 
@@ -49,6 +49,7 @@ block mainPage
           option(value="ficha") Ficha 
           option(value="slides") Slides
           option(value="manual") Manual
+          option(value="projeto") Projeto
           option(value="relatorio") Relatório
           option(value="tese") Tese
           
@@ -73,7 +74,7 @@ block mainPage
             svg(xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor")
               path(fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd")
             p.tooltiptext.font-normal Autores separados por vírgulas.
-        input(type="text" name="authors" class="px-2 bg-slate-500")
+        input(type="text" name="authors" class="px-2 bg-slate-500" required)
 
         label(for="files" class="font-light flex md:flex-col gap-2 items-center md:items-start md:gap-0")
           p Ficheiro(s)
@@ -87,7 +88,7 @@ block mainPage
         div#files_p_div.flex.flex-col.gap-2
           div#files_div.flex.flex-col.gap-2
             div.fileinput
-              input(type="file" name="files" class="w-full")
+              input(type="file" name="files" class="w-full" required)
           div(id="add_new_file_btn" class="mt-3 md:mt-0 cursor-pointer select-none self-center text-violet-400")
             svg(xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor")
               path(fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd")

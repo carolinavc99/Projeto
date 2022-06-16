@@ -59,9 +59,10 @@ app.use((req, res, next) => {
       'ficha': "Ficha",
       'teste-exame': "Teste/Exame",
       'tese': "Tese",
+      'projeto': "Projeto",
       'manual': "Manual",
       'relatorio': "Relatório"
-    }[type]
+    }[type] || type
   }
   next()
 })

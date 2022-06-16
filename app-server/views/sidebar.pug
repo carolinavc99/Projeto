@@ -15,7 +15,7 @@ block content
             path(fill-rule="evenodd" d="M8 10a4 4 0 00-3.446 6.032l-1.261 1.26a1 1 0 101.414 1.415l1.261-1.261A4 4 0 108 10zm-2 4a2 2 0 114 0 2 2 0 01-4 0z" clip-rule="evenodd")
           p(class="hidden md:inline-block") Explorar recursos
         if user.authLevel > 0
-          a(class="h-10 transition-colors ease-in-out px-2 pl-4 py-1 text-lg flex justify-center md:justify-start items-center gap-2" + (page == 2 ? " bg-violet-600" : " hover:bg-slate-700") href="/resources/user")
+          a(class="h-10 transition-colors ease-in-out px-2 pl-4 py-1 text-lg flex justify-center md:justify-start items-center gap-2" + (page == 2 ? " bg-violet-600" : " hover:bg-slate-700") href="/resources/user/" + user._id)
             svg(xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor")
               path(d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z")
             p(class="hidden md:inline-block") Os meus recursos
