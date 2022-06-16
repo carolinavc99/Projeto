@@ -46,9 +46,11 @@ router.get('/', function(req, res, next) {
     })
 })
 
-router.get('/user/:uid', producerOrAdmin, function(req, res, next) {
+router.get('/user/:uid', function(req, res, next) {
     axios.get('http://localhost:8000/api/recursos?account=' + req.params.uid + '&token=' + req.user.token).then( value => {
-        res.render('resources/resources', {resources: value.data, global: false, userpage: req.params.uid == req.user._id})
+        UserController.get_info([req.params.uid]).then(userdata => {
+            res.render('resources/resources', {resources: value.data, global: false, userpage: userdata.length > 0 ? userdata[0].username : "[DELETED]"})
+        })
     }).catch(error => {
         res.render('error', {message: error.response.data.error})
     })

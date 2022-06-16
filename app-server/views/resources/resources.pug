@@ -1,10 +1,10 @@
 extends ../sidebar
 
 block vars
-  - var page = global ? 1 : (userpage ? 2 : -1)
+  - var page = global ? 1 : (userpage == user.username ? 2 : -1)
 
 block mainPage
-  h1.text-center.text-3xl.font-bold= "Recursos" + (global ? "" : " de " + user.username) 
+  h1.text-center.text-3xl.font-bold= "Recursos" + (global ? "" : " de " + userpage) 
 
   if global
     div.bg-slate-700.px-4.py-2.rounded-xl.flex.justify-center
