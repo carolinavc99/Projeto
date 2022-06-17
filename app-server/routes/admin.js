@@ -24,7 +24,7 @@ router.get('/users', function(req, res, next) {
 })
 
 router.get('/stats', function(req, res, next) {
-    axios.get("http://localhost:8000/api/recursos/top" + '?token=' + req.user.token).then( value => {
+    axios.get("http://api-server:8000/api/recursos/top" + '?token=' + req.user.token).then( value => {
         UserController.get_info(value.data.map(r => r.submittedBy)).then( userdata => {
             value.data.forEach((r, i) => {
                 let user = userdata.find(x => x['_id'] == r.submittedBy)
@@ -34,7 +34,7 @@ router.get('/stats', function(req, res, next) {
                     value.data[i]['submitter'] = "[DELETED]"
                 }
             })
-            axios.get("http://localhost:8000/api/log?n=50&token=" + req.user.token).then(v => {
+            axios.get("http://api-server:8000/api/log?n=50&token=" + req.user.token).then(v => {
                 UserController.get_info(v.data.map(r => r.user)).then( userdata => {
                     v.data.forEach((d,i) => {
                         let user = userdata.find(x => x['_id'] == d.user)
@@ -52,7 +52,7 @@ router.get('/stats', function(req, res, next) {
 })
 
 router.get('/stats/log', function(req, res, next) {
-    axios.get("http://localhost:8000/api/log" + '?token=' + req.user.token, {responseType: 'arraybuffer'}).then( value => {
+    axios.get("http://api-server:8000/api/log" + '?token=' + req.user.token, {responseType: 'arraybuffer'}).then( value => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {

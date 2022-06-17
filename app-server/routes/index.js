@@ -9,7 +9,7 @@ const NotificationController = require('../controllers/notificationController')
 router.get('/', function(req, res, next) {
   if (req.user) {
     NotificationController.list_recent().then(notifData => {
-      axios.get('http://localhost:8000/api/recursos?recent=3&token=' + req.user.token).then( value => {
+      axios.get('http://api-server:8000/api/recursos?recent=3&token=' + req.user.token).then( value => {
         UserController.get_info(notifData.map(x => x.author).concat(value.data.map(x => x.submittedBy))).then(userdata => {
           notifData.forEach(notif => {
             let author = userdata.find(x => x['_id'] == notif.author)
@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
           res.status(500).render('error', {error: {status: 500}, message: "Erro na comunicação com a base de dados."})
         })
       }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
       })
     }).catch(e => {
       res.status(500).render('error', {error: {status: 500}, message: "Impossível obter lista de notificações."})

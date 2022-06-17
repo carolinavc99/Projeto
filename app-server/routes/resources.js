@@ -19,7 +19,7 @@ function producerOrAdmin(req, res, next) {
 }
 
 router.get('/', function(req, res, next) {
-    let url = 'http://localhost:8000/api/recursos?'
+    let url = 'http://api-server:8000/api/recursos?'
     let query = []
     if(req.query.q) {
         query.push('q=' + req.query.q)
@@ -47,7 +47,7 @@ router.get('/', function(req, res, next) {
 })
 
 router.get('/user/:uid', function(req, res, next) {
-    axios.get('http://localhost:8000/api/recursos?account=' + req.params.uid + '&token=' + req.user.token).then( value => {
+    axios.get('http://api-server:8000/api/recursos?account=' + req.params.uid + '&token=' + req.user.token).then( value => {
         UserController.get_info([req.params.uid]).then(userdata => {
             res.render('resources/resources', {resources: value.data, global: false, userpage: userdata.length > 0 ? userdata[0].username : "[DELETED]"})
         })
@@ -61,7 +61,7 @@ router.get('/new', producerOrAdmin, function(req, res, next) {
 });
 
 router.get('/:id', (req, res, next) => {
-    axios.get('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
+    axios.get('http://api-server:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
         let reviews = value.data.reviews
         let score = 0
         let userScore = 0
@@ -88,7 +88,7 @@ router.get('/:id', (req, res, next) => {
 
 router.get('/:id/edit', (req, res, next) => {
     if(req.user.authLevel > 1 || req.user._id.toString() == value.data.submittedBy.toString()) {
-        axios.get('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
+        axios.get('http://api-server:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
             res.render('resources/editResource', {resource: value.data})
         }).catch(error => {
             res.render('error', {message: error.response.data.error})
@@ -99,7 +99,7 @@ router.get('/:id/edit', (req, res, next) => {
 
 router.get('/:id/delete', (req, res, next) => {
     if(req.user.authLevel > 1 || req.user._id.toString() == value.data.submittedBy.toString()) {
-        axios.delete('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
+        axios.delete('http://api-server:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
             req.flash('success', 'Recurso removido com sucesso!')
             res.redirect('/resources/user')
         }).catch(error => {
@@ -111,7 +111,7 @@ router.get('/:id/delete', (req, res, next) => {
 
 router.post('/:id/score', (req, res, next) => {
     let userScore = req.body.value
-    axios.post('http://localhost:8000/api/recursos/' + req.params.id + '/score?token=' + req.user.token, {account: req.user._id, score: userScore}).then(value => {
+    axios.post('http://api-server:8000/api/recursos/' + req.params.id + '/score?token=' + req.user.token, {account: req.user._id, score: userScore}).then(value => {
         res.send("Score set successfully.")
     }).catch(error => {
         res.status(500).send(error.response.data.error)
@@ -119,7 +119,7 @@ router.post('/:id/score', (req, res, next) => {
 })
 
 router.post('/:id/comment', (req, res, next) => {
-    axios.post('http://localhost:8000/api/recursos/' + req.params.id + '/comment?token=' + req.user.token, {author: req.user._id, text: req.body.comment, timestamp: Date.now()}).then(value => {
+    axios.post('http://api-server:8000/api/recursos/' + req.params.id + '/comment?token=' + req.user.token, {author: req.user._id, text: req.body.comment, timestamp: Date.now()}).then(value => {
         req.flash('success', 'Comentário submetido com sucesso!')
         res.redirect("back")
     }).catch(error => {
@@ -129,7 +129,7 @@ router.post('/:id/comment', (req, res, next) => {
 
 router.delete('/:id/comment/:cid', (req, res, next) => {
     if(req.user.authLevel > 1 || req.user._id.toString() == value.data.submittedBy.toString()) {
-        axios.delete('http://localhost:8000/api/recursos/' + req.params.id + '/comment/' + req.params.cid + '?token=' + req.user.token).then(value => {
+        axios.delete('http://api-server:8000/api/recursos/' + req.params.id + '/comment/' + req.params.cid + '?token=' + req.user.token).then(value => {
             res.send("Comentário eliminado com sucesso!")
         }).catch(error => {
             res.status(500).send(error.response.data.error)
@@ -139,7 +139,7 @@ router.delete('/:id/comment/:cid', (req, res, next) => {
 })
 
 router.get('/:id/download', (req, res, next) => {
-    axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/zip?token=' + req.user.token, {responseType: 'arraybuffer'}).then(value => {
+    axios.get('http://api-server:8000/api/recursos/' + req.params.id + '/zip?token=' + req.user.token, {responseType: 'arraybuffer'}).then(value => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
@@ -148,9 +148,9 @@ router.get('/:id/download', (req, res, next) => {
 })
 
 router.get('/:id/:fid', (req, res, next) => {
-    axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '?token=' + req.user.token).then(value => {
+    axios.get('http://api-server:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '?token=' + req.user.token).then(value => {
         if (value.data.mimetype == "text/xml") {
-            axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token).then(xmldata => {
+            axios.get('http://api-server:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token).then(xmldata => {
                 xml = xmldata.data
                 xml = xml.replace(/<\/([\wí]+)>/g, (match, p1) => {
                     let a = "</" + ({
@@ -208,7 +208,7 @@ router.get('/:id/:fid', (req, res, next) => {
 })
 
 router.get('/:id/:fid/:filename', (req, res, next) => {
-    axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token, {responseType: 'arraybuffer'}).then(value => {
+    axios.get('http://api-server:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token, {responseType: 'arraybuffer'}).then(value => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
@@ -257,7 +257,7 @@ router.post('/', producerOrAdmin, upload.array('files'), function(req, res, next
     zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
         var formData = new FormData()
         formData.append('file', file, "data.zip")
-        axios.post('http://localhost:8000/api/recursos?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}}).then( value => {
+        axios.post('http://api-server:8000/api/recursos?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}}).then( value => {
             req.flash('success', 'Recurso adicionado com sucesso!')
         }).catch(error => { 
             req.flash('error', 'Erro no envio do pedido à API: ' + error.response.data.error)
@@ -324,7 +324,7 @@ router.post('/:id', upload.array('files'), function(req, res, next) {
         zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
             var formData = new FormData()
             formData.append('file', file, "data.zip")
-            axios.put('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}}).then( value => {
+            axios.put('http://api-server:8000/api/recursos/' + req.params.id + '?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}}).then( value => {
                 req.flash('success', 'Recurso editado com sucesso!')
             }).catch(error => { 
                 req.flash('error', 'Erro no envio do pedido à API: ' + error.response.data.error)

@@ -10,8 +10,10 @@ var apiRouter = require('./routes/api');
 var app = express();
 
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb://127.0.0.1/RPCW2022-Projeto'
+var mongoDB = 'mongodb://mongo/RPCW2022-Projeto'
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true})
+
+
 
 var db = mongoose.connection
 

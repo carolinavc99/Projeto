@@ -1395,6 +1395,10 @@ input:-webkit-autofill {
     padding-right: 0.75rem;
   }
 
+  .md\:pl-4 {
+    padding-left: 1rem;
+  }
+
   .md\:text-3xl {
     font-size: 1.875rem;
     line-height: 2.25rem;

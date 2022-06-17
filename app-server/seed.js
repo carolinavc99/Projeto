@@ -1,7 +1,8 @@
 var jwt = require('jsonwebtoken')
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb://127.0.0.1/RPCW2022-Projeto'
+var mongoDB = 'mongodb://mongo/RPCW2022-Projeto'
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true})
+
 
 var db = mongoose.connection
 
@@ -25,8 +26,6 @@ User.register(new User({
     authLevel: authLevel,
     token: token
     }), "admin", function(err, user){
-      if(err)
-        console.log(err)
-      else
-        db.close()
+      if(err) console.log(err)
+      db.close()
   });

@@ -15,7 +15,7 @@ const ResourceController = require('../controllers/resourceController');
 const { default: mongoose } = require('mongoose');
 
 function validXML(xml) {
-  var data = fs.readFileSync( path.resolve(__dirname + '/../data/aulaP.xsd'), "utf8")
+  var data = fs.readFileSync( path.resolve(__dirname + '/../public/aulaP.xsd'), "utf8")
   var xsdDoc = libxmljs.parseXml(data)
   var xmlDoc = libxmljs.parseXml(xml)
   var valid = xmlDoc.validate(xsdDoc)
@@ -45,7 +45,8 @@ router.get('/log', function(req, res, next) {
     if(req.query.n) {
       let lines = fs.readFileSync(path.resolve(__dirname + '/../access.log')).toString().split(/\r?\n/).reverse()
       let log = []
-      for(let i = 1; i <= parseInt(req.query.n); i++) {
+      for(let i = 0; i < Math.min(parseInt(req.query.n), lines.length); i++) {
+        if(lines[i].length == 0) continue
         let m = /\[(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2})[^{]+{user: ([^,]+)[^}]+} (\w+ .*)\s+\d+\s*$/.exec(lines[i])
         log.push({
           'date': m[1],
