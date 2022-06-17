@@ -47,7 +47,7 @@ router.get('/stats', function(req, res, next) {
             })
         }).catch( error => { res.render('error', {message: error}) })
     }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
     })
 })
 
@@ -56,7 +56,7 @@ router.get('/stats/log', function(req, res, next) {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
     })
 })
 

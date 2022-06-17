@@ -25,8 +25,6 @@ User.register(new User({
     authLevel: authLevel,
     token: token
     }), "admin", function(err, user){
-      if(err)
-        console.log(err)
-      else
-        db.close()
+      if(err) console.log(err)
+      db.close()
   });

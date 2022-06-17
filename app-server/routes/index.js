@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
           res.status(500).render('error', {error: {status: 500}, message: "Erro na comunicação com a base de dados."})
         })
       }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
       })
     }).catch(e => {
       res.status(500).render('error', {error: {status: 500}, message: "Impossível obter lista de notificações."})

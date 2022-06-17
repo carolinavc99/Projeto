@@ -42,7 +42,7 @@ router.get('/', function(req, res, next) {
             res.render('resources/resources', {resources: value.data, global: true, q: req.query.q, tipo: req.query.tipo})
         }).catch( error => { res.render('error', {message: error}) })
     }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
     })
 })
 
@@ -52,7 +52,7 @@ router.get('/user/:uid', function(req, res, next) {
             res.render('resources/resources', {resources: value.data, global: false, userpage: userdata.length > 0 ? userdata[0].username : "[DELETED]"})
         })
     }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
     })
 })
 
@@ -91,7 +91,7 @@ router.get('/:id/edit', (req, res, next) => {
         axios.get('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
             res.render('resources/editResource', {resource: value.data})
         }).catch(error => {
-            res.render('error', {message: error.response.data.error})
+            res.render('error', {message: error.response ? error.response.data.error : error})
         })
     } else
         res.render('error', {message: "Unauthorized"})
@@ -103,7 +103,7 @@ router.get('/:id/delete', (req, res, next) => {
             req.flash('success', 'Recurso removido com sucesso!')
             res.redirect('/resources/user')
         }).catch(error => {
-            res.render('error', {message: error.response.data.error})
+            res.render('error', {message: error.response ? error.response.data.error : error})
         })
     } else
         res.render('error', {message: "Unauthorized"})
@@ -143,7 +143,7 @@ router.get('/:id/download', (req, res, next) => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
     })
 })
 
@@ -203,7 +203,7 @@ router.get('/:id/:fid', (req, res, next) => {
             res.render('resources/file', {file: value.data})
         }
     }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
     })
 })
 
@@ -212,7 +212,7 @@ router.get('/:id/:fid/:filename', (req, res, next) => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
-        res.render('error', {message: error.response.data.error})
+        res.render('error', {message: error.response ? error.response.data.error : error})
     })
 })
 
