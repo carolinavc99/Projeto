@@ -42,7 +42,7 @@ router.get('/', function(req, res, next) {
             res.render('resources/resources', {resources: value.data, global: true, q: req.query.q, tipo: req.query.tipo})
         }).catch( error => { res.render('error', {message: error}) })
     }).catch(error => {
-        res.render('error', {message: error.response ? error.response.data.error : error})
+        res.render('error', {message: error.response !== undefined ? error.response.data.error : error})
     })
 })
 
@@ -52,7 +52,7 @@ router.get('/user/:uid', function(req, res, next) {
             res.render('resources/resources', {resources: value.data, global: false, userpage: userdata.length > 0 ? userdata[0].username : "[DELETED]"})
         })
     }).catch(error => {
-        res.render('error', {message: error.response ? error.response.data.error : error})
+        res.render('error', {message: error.response !== undefined ? error.response.data.error : error})
     })
 })
 
@@ -91,7 +91,7 @@ router.get('/:id/edit', (req, res, next) => {
         axios.get('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token).then(value => {
             res.render('resources/editResource', {resource: value.data})
         }).catch(error => {
-            res.render('error', {message: error.response ? error.response.data.error : error})
+            res.render('error', {message: error.response !== undefined ? error.response.data.error : error})
         })
     } else
         res.render('error', {message: "Unauthorized"})
@@ -103,7 +103,7 @@ router.get('/:id/delete', (req, res, next) => {
             req.flash('success', 'Recurso removido com sucesso!')
             res.redirect('/resources/user')
         }).catch(error => {
-            res.render('error', {message: error.response ? error.response.data.error : error})
+            res.render('error', {message: error.response !== undefined ? error.response.data.error : error})
         })
     } else
         res.render('error', {message: "Unauthorized"})
@@ -114,7 +114,7 @@ router.post('/:id/score', (req, res, next) => {
     axios.post('http://localhost:8000/api/recursos/' + req.params.id + '/score?token=' + req.user.token, {account: req.user._id, score: userScore}).then(value => {
         res.send("Score set successfully.")
     }).catch(error => {
-        res.status(500).send(error.response.data.error)
+        res.status(500).send(error.response !== undefined ? error.response.data.error : error)
     })
 })
 
@@ -123,7 +123,7 @@ router.post('/:id/comment', (req, res, next) => {
         req.flash('success', 'Comentário submetido com sucesso!')
         res.redirect("back")
     }).catch(error => {
-        res.status(500).send(error.response.data.error)
+        res.status(500).send(error.response !== undefined ? error.response.data.error : error)
     })
 })
 
@@ -132,7 +132,7 @@ router.delete('/:id/comment/:cid', (req, res, next) => {
         axios.delete('http://localhost:8000/api/recursos/' + req.params.id + '/comment/' + req.params.cid + '?token=' + req.user.token).then(value => {
             res.send("Comentário eliminado com sucesso!")
         }).catch(error => {
-            res.status(500).send(error.response.data.error)
+            res.status(500).send(error.response !== undefined ? error.response.data.error : error)
         })
     } else
         res.render('error', {message: "Unauthorized"})
@@ -143,13 +143,13 @@ router.get('/:id/download', (req, res, next) => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
-        res.render('error', {message: error.response ? error.response.data.error : error})
+        res.render('error', {message: error.response !== undefined ? error.response.data.error : error})
     })
 })
 
 router.get('/:id/:fid', (req, res, next) => {
     axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '?token=' + req.user.token).then(value => {
-        if (value.data.mimetype == "text/xml") {
+        if (value.data.mimetype.endsWith("/xml")) {
             axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token).then(xmldata => {
                 xml = xmldata.data
                 xml = xml.replace(/<\/([\wí]+)>/g, (match, p1) => {
@@ -203,7 +203,7 @@ router.get('/:id/:fid', (req, res, next) => {
             res.render('resources/file', {file: value.data})
         }
     }).catch(error => {
-        res.render('error', {message: error.response ? error.response.data.error : error})
+        res.render('error', {message: error.response !== undefined ? error.response.data.error : error})
     })
 })
 
@@ -212,7 +212,7 @@ router.get('/:id/:fid/:filename', (req, res, next) => {
         res.set(value.headers)
         res.send(value.data)
     }).catch(error => {
-        res.render('error', {message: error.response ? error.response.data.error : error})
+        res.render('error', {message: error.response !== undefined ? error.response.data.error : error})
     })
 })
 
@@ -257,10 +257,10 @@ router.post('/', producerOrAdmin, upload.array('files'), function(req, res, next
     zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
         var formData = new FormData()
         formData.append('file', file, "data.zip")
-        axios.post('http://localhost:8000/api/recursos?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}}).then( value => {
+        axios.post('http://localhost:8000/api/recursos?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}, maxBodyLength: Infinity}).then( value => {
             req.flash('success', 'Recurso adicionado com sucesso!')
         }).catch(error => { 
-            req.flash('error', 'Erro no envio do pedido à API: ' + error.response.data.error)
+            req.flash('error', 'Erro no envio do pedido à API: ' + error)
         }).finally(() => {
             res.redirect('/resources/new')
         })
@@ -324,10 +324,10 @@ router.post('/:id', upload.array('files'), function(req, res, next) {
         zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
             var formData = new FormData()
             formData.append('file', file, "data.zip")
-            axios.put('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}}).then( value => {
+            axios.put('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}, maxBodyLength: Infinity}).then( value => {
                 req.flash('success', 'Recurso editado com sucesso!')
             }).catch(error => { 
-                req.flash('error', 'Erro no envio do pedido à API: ' + error.response.data.error)
+                req.flash('error', 'Erro no envio do pedido à API: ' + error.response !== undefined ? error.response.data.error : error)
             }).finally(() => {
                 res.redirect('/resources/' + req.params.id)
             })

@@ -61,7 +61,8 @@ app.use((req, res, next) => {
       'tese': "Tese",
       'projeto': "Projeto",
       'manual': "Manual",
-      'relatorio': "Relatório"
+      'relatorio': "Relatório",
+      'outro': 'Outro'
     }[type] || type
   }
   next()
