@@ -148,9 +148,9 @@ router.get('/:id/download', (req, res, next) => {
 })
 
 router.get('/:id/:fid', (req, res, next) => {
-    axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '?token=' + req.user.token).then(value => {
+    axios.get('http://api-server:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '?token=' + req.user.token).then(value => {
         if (value.data.mimetype.endsWith("/xml")) {
-            axios.get('http://localhost:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token).then(xmldata => {
+            axios.get('http://api-server:8000/api/recursos/' + req.params.id + '/' + req.params.fid + '/file' + '?token=' + req.user.token).then(xmldata => {
                 xml = xmldata.data
                 xml = xml.replace(/<\/([\wí]+)>/g, (match, p1) => {
                     let a = "</" + ({
@@ -257,7 +257,7 @@ router.post('/', producerOrAdmin, upload.array('files'), function(req, res, next
     zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
         var formData = new FormData()
         formData.append('file', file, "data.zip")
-        axios.post('http://localhost:8000/api/recursos?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}, maxBodyLength: Infinity}).then( value => {
+        axios.post('http://api-server:8000/api/recursos?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}, maxBodyLength: Infinity}).then( value => {
             req.flash('success', 'Recurso adicionado com sucesso!')
         }).catch(error => { 
             req.flash('error', 'Erro no envio do pedido à API: ' + error)
@@ -324,7 +324,7 @@ router.post('/:id', upload.array('files'), function(req, res, next) {
         zip.generateAsync({type:'nodebuffer', streamFiles: true}).then(file => {
             var formData = new FormData()
             formData.append('file', file, "data.zip")
-            axios.put('http://localhost:8000/api/recursos/' + req.params.id + '?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}, maxBodyLength: Infinity}).then( value => {
+            axios.put('http://api-server:8000/api/recursos/' + req.params.id + '?token=' + req.user.token, formData, {headers: {'Content-Type': 'multipart/form-data'}, maxBodyLength: Infinity}).then( value => {
                 req.flash('success', 'Recurso editado com sucesso!')
             }).catch(error => { 
                 req.flash('error', 'Erro no envio do pedido à API: ' + error.response !== undefined ? error.response.data.error : error)
