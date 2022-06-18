@@ -1,0 +1,25 @@
+version: '3'
+services:
+  api-server:
+    restart: always
+    depends_on: 
+      - mongo
+    image: risingfisan/api-server:latest
+    ports:
+      - 8000:8000
+  app-server:
+    restart: always
+    image: risingfisan/app-server:latest
+    depends_on: 
+      - mongo
+      - api-server
+    ports:
+      - 3000:3000
+  mongo:
+    image: mongo
+    # ports:
+    #   - 27017:27017
+    volumes:
+      - mongodb:/data/db
+volumes:
+ mongodb:
