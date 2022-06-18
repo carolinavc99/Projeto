@@ -17,8 +17,10 @@ block mainPage
             option(selected=(type == "ficha") value="ficha") Ficha 
             option(selected=(type == "slides") value="slides") Slides
             option(selected=(type == "manual") value="manual") Manual
+            option(selected=(type == "projeto") value="projeto") Projeto
             option(selected=(type == "relatorio") value="relatorio") Relatório
             option(selected=(type == "tese") value="tese") Tese
+            option(selected=(type == "outro") value="outro") Outro
         div.self-stretch.bg-slate-500(class="h-[1px] md:h-auto w-auto md:w-[1px]")
         div.flex.gap-2
           input(type="text", name="q" class="bg-slate-500 rounded-md px-1" value=q)

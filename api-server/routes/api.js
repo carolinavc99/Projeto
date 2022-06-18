@@ -239,7 +239,7 @@ router.post('/recursos', upload.single('file'), function(req, res, next) {
           values.forEach((fileData, i) => {
             let hash = crypto.createHash('sha512').update(fileData, 'utf8').digest('hex')
             if (hash === sip.files[i].hash) {
-              if(!(sip.files[i].mimetype == "text/xml") || validXML(fileData.toString())) {
+              if(!(sip.files[i].mimetype.endsWith("/xml")) || validXML(fileData.toString())) {
                 fs.writeFile(path + '/' + sip.files[i].name, fileData, err => { if (err) throw err })
               } else {
                 throw new Error("Invalid XML file!")
@@ -320,7 +320,7 @@ router.put('/recursos/:rid', adminOrOwner, upload.single('file'), function(req, 
           values.forEach((fileData, i) => {
             let hash = crypto.createHash('sha512').update(fileData, 'utf8').digest('hex')
             if (hash === sip.files[i].hash) {
-              if(!sip.files[i].mimetype == "text/xml" || validXML(fileData.toString())) {
+              if(!(sip.files[i].mimetype.endsWith("/xml")) || validXML(fileData.toString())) {
                 fs.writeFile(path + '/' + sip.files[i].name, fileData, err => { if (err) throw err })
               } else {
                 throw new Error("Invalid XML file!")
